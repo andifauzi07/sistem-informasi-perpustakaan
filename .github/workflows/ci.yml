@@ -1,0 +1,29 @@
+# Gerbang kualitas PRD §17.3. Hanya Supabase lokal: tanpa secret, tanpa link, tanpa sip-prod.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Skrip postinstall dependency tidak boleh mendapat token bertulis.
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+      # pgTAP hanya butuh Postgres; stack penuh tidak perlu dinyalakan.
+      - run: npx supabase db start
+      - run: npm run db:test

@@ -1460,7 +1460,7 @@ Format setiap TC: ID, FR terkait, prasyarat, langkah, data uji, hasil yang dihar
 
 | Workflow | Pemicu | Langkah |
 |---|---|---|
-| `ci.yml` | *pull request* dan *push* ke `main` | `npm ci` → `typecheck` → `lint` → `test` → `build` → `supabase start` + `supabase test db` (runner Ubuntu memiliki Docker) |
+| `ci.yml` | *pull request* dan *push* ke `main` | `npm ci` → `typecheck` → `lint` → `test` → `build` → `supabase db start` + `supabase test db` (runner Ubuntu memiliki Docker; pgTAP hanya butuh Postgres) |
 | `e2e.yml` | manual / terjadwal | Playwright terhadap URL preview |
 | `backup.yml` | mingguan (Minggu 02.00 WITA) | `supabase db dump` (skema + data) terhadap `sip-prod` → artefak terenkripsi atau repo privat; retensi ≥ 4 salinan |
 
@@ -1506,7 +1506,7 @@ Jadwal bersifat indikatif dan perlu disesuaikan dengan kalender pendidikan serta
 | Fase Waterfall | Milestone | Isi | Jadwal indikatif |
 |---|---|---|---|
 | 1. Analisis kebutuhan | — | Observasi, wawancara, PRD v1.0 | s.d. 23 Okt 2026 |
-| 2. Perancangan | M0 | Repo, Supabase dev/prod, Vercel, CI; **spike login email sintetis**; skema DB final + RLS; wireframe | 26 Okt – 1 Nov 2026 |
+| 2. Perancangan | M0 | Repo, Supabase dev/prod, Vercel, CI; **spike login email sintetis**; desain skema final (§11) + RLS (§13.3), migrasi dibangun per milestone M1–M4; wireframe | 26 Okt – 1 Nov 2026 |
 | 3. Implementasi | M1 | Auth, ganti password, manajemen anggota, impor, Edge Function | 2 – 8 Nov 2026 |
 | | M2 | Kategori, buku, eksemplar, label barcode, katalog | 9 – 15 Nov 2026 |
 | | M3 | Sirkulasi lengkap (pengajuan, verifikasi, meja Pinjam/Kembali, kedaluwarsa) + denda | 16 – 29 Nov 2026 |
@@ -1640,3 +1640,4 @@ Hal-hal berikut perlu direvisi agar dokumen skripsi selaras dengan sistem yang d
 | Versi | Tanggal | Perubahan |
 |---|---|---|
 | 1.0 | 22 Okt 2026 | Baseline dari proposal + konfirmasi: stack React/TanStack/Supabase/Vercel; alur pengajuan online + verifikasi; akun dibuat pustakawan, login NIS/NIP; denda uang tanpa blokir; fitur tambahan barcode per eksemplar dan kartu anggota; tiga peran; PRD sebagai berkas di repositori. |
+| 1.0.1 | 22 Okt 2026 | §18 (rencana, bukan perilaku): desain skema di M0 tetap final sesuai §11, sedangkan migrasi SQL dibangun bertahap per milestone M1–M4 bersama fitur yang memakainya. §17.3: `ci.yml` cukup menyalakan Postgres (`supabase db start`) untuk pgTAP. Disetujui pengguna. |

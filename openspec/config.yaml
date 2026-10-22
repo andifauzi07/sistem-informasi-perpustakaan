@@ -9,6 +9,7 @@ context: |
   Tulis semua artefak dalam Bahasa Indonesia. Istilah dan nama kode mengikuti glosarium PRD Lampiran A.
   Capability spec = modul PRD = folder src/features/<domain>: auth, members, cards, catalog, collection,
   circulation, fines, materials, dashboard, reports, settings, activity-log.
+  Pengecualian: capability `platform` untuk NFR lintas modul (shell aplikasi, anggaran bundle, CI), tanpa folder fitur.
   Satu change sebaiknya sesuai satu milestone atau sebagian milestone (M0–M6, PRD §18).
 
 rules:

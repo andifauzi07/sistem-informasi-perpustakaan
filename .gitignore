@@ -2,3 +2,7 @@
 !.env.example
 node_modules
 supabase/.temp
+dist
+test-results
+playwright-report
+coverage
