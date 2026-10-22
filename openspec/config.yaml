@@ -1,0 +1,53 @@
+schema: spec-driven
+
+context: |
+  Hierarki sumber kebenaran: docs/PRD.md > artefak OpenSpec. Aturan implementasi ada di CLAUDE.md.
+  Jika artefak bertentangan dengan PRD atau CLAUDE.md, berhenti dan tanyakan ke pengguna; jangan menebak.
+  Proyek skripsi R&D dengan model Waterfall; kualitas diuji dengan ISO/IEC 25010 (Functional Suitability,
+  Usability, Performance Efficiency, Portability). Cakupan dibekukan pada PRD v1.0; item PRD §5.2 (Won't v1)
+  tidak boleh masuk tanpa persetujuan pengguna.
+  Tulis semua artefak dalam Bahasa Indonesia. Istilah dan nama kode mengikuti glosarium PRD Lampiran A.
+  Capability spec = modul PRD = folder src/features/<domain>: auth, members, cards, catalog, collection,
+  circulation, fines, materials, dashboard, reports, settings, activity-log.
+  Satu change sebaiknya sesuai satu milestone atau sebagian milestone (M0–M6, PRD §18).
+
+rules:
+  proposal:
+    - Cantumkan ID PRD yang dicakup (FR-*, BR-*, NFR-*) dan milestone terkait.
+    - Nyatakan secara eksplisit apa yang di luar cakupan change ini.
+    - Bila change mengubah perilaku FR/BR atau menyentuh PRD §5.2, beri label "Perubahan baseline PRD" dan minta persetujuan sebelum lanjut.
+    - Bila ada dampak ke dokumen skripsi (BAB II/III, diagram), sebutkan dengan merujuk PRD Lampiran C.
+    - Maksimal 500 kata.
+  specs:
+    - Pertahankan sintaks OpenSpec dalam bahasa Inggris (header delta ADDED/MODIFIED/REMOVED/RENAMED Requirements, "### Requirement:", "#### Scenario:", SHALL/MUST, WHEN/THEN); isi kalimat dalam Bahasa Indonesia.
+    - Setiap Requirement mencantumkan ID PRD sumbernya, mis. "(FR-CIR-07, BR-05)". Requirement tanpa ID PRD hanya boleh setelah disetujui pengguna.
+    - Setiap Requirement punya minimal satu Scenario sukses dan satu Scenario untuk setiap kode galat relevan dari PRD §12.4, dengan kode galat ditulis persis.
+    - Tulis Scenario agar bisa langsung dipakai sebagai kasus uji black-box; cantumkan ID TC dari PRD §16.2 bila ada.
+    - Jangan menyalin tabel PRD (kolom tabel, matriks RLS, daftar RPC); rujuk nomor bagiannya.
+    - Nilai yang dapat diatur (batas pinjam, lama pinjam, tarif denda, batas ambil) dirujuk sebagai kebijakan loan_policies, bukan angka tetap.
+  design:
+    - Tulis hanya keputusan yang belum ada di PRD §7, §11, §12 atau CLAUDE.md; selebihnya cukup dirujuk.
+    - Untuk perubahan basis data, daftar migrasi, fungsi RPC, kebijakan RLS/Storage, dan dampaknya pada tipe yang di-generate.
+    - Setiap penyimpangan dari CLAUDE.md atau ADR PRD §7.4 ditulis sebagai ADR baru dan memerlukan persetujuan pengguna.
+    - Bila menambah dependency atau memperbesar bundle rute anggota, jelaskan dampaknya terhadap NFR-PE-03.
+    - Wajib ada bagian "## Ponytail" yang menerapkan tangga keputusan Ponytail untuk setiap komponen/fungsi baru - (1) perlu ada? (YAGNI), (2) cukup pustaka standar?, (3) ada fitur native platform (Postgres, Supabase, browser)?, (4) ada dependency yang sudah terpasang (stack CLAUDE.md §2)?, (5) cukup satu baris?, (6) baru tulis kode minimum. Catat jawaban per anak tangga untuk setiap kode baru yang diusulkan.
+    - Minimalisme Ponytail tidak boleh menghapus kewajiban PRD dan CLAUDE.md - RLS dan cek peran, validasi, kode galat §12.4, state loading/kosong/galat, aksesibilitas, dan tes tetap wajib.
+  tasks:
+    - Urutan wajib per fitur - migrasi + RLS + RPC + pgTAP, regenerate tipe, lapisan api fitur, UI, E2E, lalu katalog TC.
+    - Pecah tugas menjadi maksimal 2 jam; setiap tugas menyebut ID FR atau TC yang dipenuhi.
+    - Dua tugas terakhir selalu "Jalankan /ponytail-review pada diff change ini dan terapkan temuan yang tidak melanggar PRD/CLAUDE.md" lalu "Penuhi Definition of Done CLAUDE.md §13"; jangan menyalin isi daftar tersebut.
+    - Jangan membuat tugas yang menjalankan perintah ke project Supabase produksi.
+
+operations:
+  apply:
+    guidance:
+      - Ikuti CLAUDE.md; bila tasks bertentangan dengan CLAUDE.md atau PRD, berhenti dan tanyakan.
+      - Tulis kode sesuai bagian "## Ponytail" di design.md; kode di luar keputusan itu (helper, abstraksi, dependency baru) harus dibahas dulu dengan pengguna.
+      - Centang tugas hanya setelah verifikasi terkait (typecheck, pgTAP, unit, atau E2E) lulus.
+      - Untuk setiap FR yang selesai, tambah atau perbarui TC di docs/testing/black-box.md.
+      - Ringkas hasil tes - perintah yang dijalankan dan status lulus/gagal.
+  archive:
+    guidance:
+      - Sebelum arsip, pastikan `openspec validate --strict` lulus, temuan /ponytail-review sudah ditindaklanjuti, dan Definition of Done CLAUDE.md §13 terpenuhi.
+      - Bila change berlabel "Perubahan baseline PRD", perbarui bagian PRD terkait dan tambahkan baris di PRD Lampiran D; selain itu PRD tidak diubah.
+      - Akhiri dengan ringkasan singkat - capability yang berubah, ID FR terkait, dan TC yang menjadi bukti.
