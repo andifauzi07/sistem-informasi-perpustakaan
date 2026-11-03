@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { onlineManager, type QueryClient } from '@tanstack/react-query'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { Toaster } from '@/components/ui/sonner'
 
 export type RouterContext = { queryClient: QueryClient; auth: SupabaseClient['auth'] }
 
@@ -14,6 +15,7 @@ function RootLayout() {
     <>
       <OfflineBanner />
       <Outlet />
+      <Toaster richColors position="top-right" />
     </>
   )
 }
