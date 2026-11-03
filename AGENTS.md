@@ -360,3 +360,54 @@ wip                                                             # commit susulan
 - Jangan menyimpan password sementara di DB, log, atau berkas. Password sementara hanya ditampilkan sekali.
 - Jangan membuat commit yang mencampur scope atau fungsionalitas berbeda, commit `wip`/susulan, atau commit langsung ke `main` (bagian 13).
 - Jangan menulis ulang riwayat yang sudah di-push atau memakai `git push --force` tanpa instruksi eksplisit dari pengguna, dan jangan pernah force-push ke `main`.
+
+## 16. Penanganan Issue GitHub
+
+Ketika ditugaskan untuk menyelesaikan sebuah issue pada repositori GitHub, agen wajib mematuhi protokol berikut:
+
+### 16.1. Alur Kerja Resolusi Issue
+
+1. **Investigasi & Triage (Sebelum menyentuh kode)**:
+   - Pahami konteks issue dan cocokkan dengan ketentuan PRD (apakah ini bug, inkonsistensi BR, atau permohonan fitur baru).
+   - Temukan berkas sumber masalah (*root cause*).
+   - Reproduksi masalah secara mandiri (misal: buat skrip atau tulis tes yang mereproduksi kegagalan).
+2. **Penetapan Batasan Lingkup (*Scope Guardrails*)**:
+   - **Minimal Diff**: Ubah hanya baris kode yang esensial untuk menyelesaikan issue tersebut.
+   - **Dilarang Refactoring Liar**: Jangan memformat ulang, mengubah arsitektur, atau merapikan berkas lain di luar lingkup issue.
+   - **Dependensi Terkunci**: Jangan menambahkan atau memperbarui library pada `package.json` tanpa izin eksplisit.
+   - Bila menemukan potensi masalah lain saat investigasi, catat sebagai temuan terpisah; jangan diselesaikan dalam branch issue yang sama.
+3. **Pengujian Regresi (*Regression Test*)**:
+   - Setiap perbaikan bug wajib disertai pengujian baru (pgTAP untuk backend/RPC/RLS, Vitest untuk logika/utilitas, Playwright untuk alur kritis).
+   - Pastikan tes gagal sebelum kode diperbaiki, dan lulus setelah perbaikan diterapkan.
+   - Wajib menjalankan siklus verifikasi: `npm run typecheck` + `npm run lint` + `npm run test`. Jika menyentuh DB, wajib `db reset` → `db:types` → `npm run db:test`.
+4. **Branch & Commit**:
+   - Buat branch baru dari `origin/main` yang mutakhir: `fix/issue-<nomor>-<ringkasan>` atau `feat/issue-<nomor>-<ringkasan>`.
+   - Commit mengikuti Bagian 13: 1 scope + 1 fungsionalitas = 1 commit utuh (kode + tes + types).
+   - Format subjek commit menyertakan referensi issue: `fix(<scope>): <subjek perbaikan> (fixes #<nomor>)`.
+
+### 16.2. Template Deskripsi Pull Request (PR)
+
+Setiap PR yang dibuat untuk menyelesaikan issue wajib menggunakan format baku berikut:
+
+```markdown
+## Deskripsi Masalah
+Menyelesaikan issue #<nomor_issue>.
+<Jelaskan secara singkat gejala masalah atau kebutuhan fitur baru dari issue.>
+
+## Akar Masalah (Root Cause)
+<Jelaskan penyebab teknis terjadinya masalah (hanya untuk bug fix). Jika penambahan fitur, jelaskan konteks arsitekturnya.>
+
+## Solusi yang Diterapkan
+- <Rincian perubahan 1: misal penyesuaian RPC / komponen / skema Zod>
+- <Rincian perubahan 2>
+
+## Bukti Pengujian
+- [x] Tes regresi ditambahkan: `<nama_file_tes>`
+- [x] `npm run typecheck` lulus
+- [x] `npm run lint` lulus
+- [x] `npm run test` (atau `npm run db:test`) lulus
+- [x] `npm run build` lulus
+
+## Tautan Issue
+Closes #<nomor_issue>
+```
