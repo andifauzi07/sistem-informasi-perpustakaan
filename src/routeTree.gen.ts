@@ -10,33 +10,118 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppBerandaRouteImport } from './routes/_app/beranda'
+import { Route as AppGantiPasswordRouteImport } from './routes/_app/ganti-password'
+import { Route as AppProfilRouteImport } from './routes/_app/profil'
+import { Route as AppPustakawanRouteRouteImport } from './routes/_app/pustakawan/route'
+import { Route as AppPustakawanAnggotaRouteImport } from './routes/_app/pustakawan/anggota'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppBerandaRoute = AppBerandaRouteImport.update({
+  id: '/beranda',
+  path: '/beranda',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGantiPasswordRoute = AppGantiPasswordRouteImport.update({
+  id: '/ganti-password',
+  path: '/ganti-password',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfilRoute = AppProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPustakawanRouteRoute = AppPustakawanRouteRouteImport.update({
+  id: '/pustakawan',
+  path: '/pustakawan',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPustakawanAnggotaRoute = AppPustakawanAnggotaRouteImport.update({
+  id: '/anggota',
+  path: '/anggota',
+  getParentRoute: () => AppPustakawanRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/pustakawan': typeof AppPustakawanRouteRouteWithChildren
+  '/beranda': typeof AppBerandaRoute
+  '/ganti-password': typeof AppGantiPasswordRoute
+  '/profil': typeof AppProfilRoute
+  '/pustakawan/anggota': typeof AppPustakawanAnggotaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/pustakawan': typeof AppPustakawanRouteRouteWithChildren
+  '/beranda': typeof AppBerandaRoute
+  '/ganti-password': typeof AppGantiPasswordRoute
+  '/profil': typeof AppProfilRoute
+  '/pustakawan/anggota': typeof AppPustakawanAnggotaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_app/pustakawan': typeof AppPustakawanRouteRouteWithChildren
+  '/_app/beranda': typeof AppBerandaRoute
+  '/_app/ganti-password': typeof AppGantiPasswordRoute
+  '/_app/profil': typeof AppProfilRoute
+  '/_app/pustakawan/anggota': typeof AppPustakawanAnggotaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/pustakawan'
+    | '/beranda'
+    | '/ganti-password'
+    | '/profil'
+    | '/pustakawan/anggota'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/pustakawan'
+    | '/beranda'
+    | '/ganti-password'
+    | '/profil'
+    | '/pustakawan/anggota'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/login'
+    | '/_app/pustakawan'
+    | '/_app/beranda'
+    | '/_app/ganti-password'
+    | '/_app/profil'
+    | '/_app/pustakawan/anggota'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +133,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/beranda': {
+      id: '/_app/beranda'
+      path: '/beranda'
+      fullPath: '/beranda'
+      preLoaderRoute: typeof AppBerandaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ganti-password': {
+      id: '/_app/ganti-password'
+      path: '/ganti-password'
+      fullPath: '/ganti-password'
+      preLoaderRoute: typeof AppGantiPasswordRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profil': {
+      id: '/_app/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof AppProfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/pustakawan': {
+      id: '/_app/pustakawan'
+      path: '/pustakawan'
+      fullPath: '/pustakawan'
+      preLoaderRoute: typeof AppPustakawanRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/pustakawan/anggota': {
+      id: '/_app/pustakawan/anggota'
+      path: '/anggota'
+      fullPath: '/pustakawan/anggota'
+      preLoaderRoute: typeof AppPustakawanAnggotaRouteImport
+      parentRoute: typeof AppPustakawanRouteRoute
+    }
   }
 }
 
+interface AppPustakawanRouteRouteChildren {
+  AppPustakawanAnggotaRoute: typeof AppPustakawanAnggotaRoute
+}
+
+const AppPustakawanRouteRouteChildren: AppPustakawanRouteRouteChildren = {
+  AppPustakawanAnggotaRoute: AppPustakawanAnggotaRoute,
+}
+
+const AppPustakawanRouteRouteWithChildren =
+  AppPustakawanRouteRoute._addFileChildren(AppPustakawanRouteRouteChildren)
+
+interface AppRouteChildren {
+  AppPustakawanRouteRoute: typeof AppPustakawanRouteRouteWithChildren
+  AppBerandaRoute: typeof AppBerandaRoute
+  AppGantiPasswordRoute: typeof AppGantiPasswordRoute
+  AppProfilRoute: typeof AppProfilRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppPustakawanRouteRoute: AppPustakawanRouteRouteWithChildren,
+  AppBerandaRoute: AppBerandaRoute,
+  AppGantiPasswordRoute: AppGantiPasswordRoute,
+  AppProfilRoute: AppProfilRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

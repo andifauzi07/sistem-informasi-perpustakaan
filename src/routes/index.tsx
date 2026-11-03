@@ -1,9 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { sessionQueryOptions } from '@/features/auth/api/queries'
 
 export const Route = createFileRoute('/')({
-  component: () => (
-    <main className="p-4">
-      <h1 className="text-xl font-semibold">SIP SMKN 1 Selayar</h1>
-    </main>
-  ),
+  beforeLoad: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(sessionQueryOptions())
+    if (session?.user) {
+      throw redirect({ to: '/beranda' })
+    } else {
+      throw redirect({ to: '/login' })
+    }
+  },
 })
