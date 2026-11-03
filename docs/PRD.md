@@ -1460,11 +1460,11 @@ Format setiap TC: ID, FR terkait, prasyarat, langkah, data uji, hasil yang dihar
 
 | Workflow | Pemicu | Langkah |
 |---|---|---|
-| `ci.yml` | *pull request* dan *push* ke `main` | `npm ci` → `typecheck` → `lint` → `test` → `build` → `supabase db start` + `supabase test db` (runner Ubuntu memiliki Docker; pgTAP hanya butuh Postgres) |
+| `ci.yml` | *pull request* dan *push* ke `main` | `npm ci` → `typecheck` → `lint` → `test` → `build` → `supabase db start` + `supabase test db` (runner Ubuntu memiliki Docker; pgTAP hanya butuh Postgres). Pada *push* ke `main`: jika terdeteksi migrasi baru di `supabase/migrations/`, jalankan `npx supabase db push` ke Supabase Cloud. |
 | `e2e.yml` | manual / terjadwal | Playwright terhadap URL preview |
 | `backup.yml` | mingguan (Minggu 02.00 WITA) | `supabase db dump` (skema + data) terhadap `sip-prod` → artefak terenkripsi atau repo privat; retensi ≥ 4 salinan |
 
-Deploy frontend otomatis oleh integrasi Git Vercel. Migrasi produksi (`supabase db push`) dan deploy function dijalankan **manual** oleh pengembang setelah review.
+Deploy frontend otomatis oleh integrasi Git Vercel. Migrasi produksi (`supabase db push`) dijalankan otomatis oleh CI pada *push* ke `main` bila terdeteksi migrasi baru. Deploy function dijalankan **manual** oleh pengembang setelah review.
 
 ### 17.4 Backup & pemulihan
 
@@ -1641,3 +1641,4 @@ Hal-hal berikut perlu direvisi agar dokumen skripsi selaras dengan sistem yang d
 |---|---|---|
 | 1.0 | 22 Okt 2026 | Baseline dari proposal + konfirmasi: stack React/TanStack/Supabase/Vercel; alur pengajuan online + verifikasi; akun dibuat pustakawan, login NIS/NIP; denda uang tanpa blokir; fitur tambahan barcode per eksemplar dan kartu anggota; tiga peran; PRD sebagai berkas di repositori. |
 | 1.0.1 | 22 Okt 2026 | §18 (rencana, bukan perilaku): desain skema di M0 tetap final sesuai §11, sedangkan migrasi SQL dibangun bertahap per milestone M1–M4 bersama fitur yang memakainya. §17.3: `ci.yml` cukup menyalakan Postgres (`supabase db start`) untuk pgTAP. Disetujui pengguna. |
+| 1.0.2 | 3 Nov 2026 | §17.3: Otomatisasi CD migrasi database via `ci.yml`; `npx supabase db push` dijalankan otomatis pada event push ke `main` saat ada berkas migrasi baru di `supabase/migrations/`. Disetujui pengguna. |
