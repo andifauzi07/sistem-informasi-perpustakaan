@@ -8,7 +8,14 @@ import pluginRouter from '@tanstack/eslint-plugin-router'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'playwright-report', 'test-results', 'src/routeTree.gen.ts', 'src/types/database.types.ts']),
+  globalIgnores([
+    'dist',
+    'playwright-report',
+    'test-results',
+    'src/routeTree.gen.ts',
+    'src/types/database.types.ts',
+    'supabase/functions/**',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -24,8 +31,16 @@ export default defineConfig([
       parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
     },
     rules: {
-      // Berkas rute TanStack wajib mengekspor `Route`.
-      'react-refresh/only-export-components': ['warn', { allowExportNames: ['Route'] }],
+      // Berkas rute TanStack wajib mengekspor `Route`, dan komponen shadcn mengekspor varian konstan.
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowExportNames: ['Route'], allowConstantExport: true },
+      ],
+      // TanStack Router memakai throw redirect(...) yang melempar objek Redirect.
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        { allow: ['Redirect', 'NotFoundError'] },
+      ],
     },
   },
 ])
