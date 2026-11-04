@@ -16,7 +16,11 @@ import { Route as AppBerandaRouteImport } from './routes/_app/beranda'
 import { Route as AppGantiPasswordRouteImport } from './routes/_app/ganti-password'
 import { Route as AppProfilRouteImport } from './routes/_app/profil'
 import { Route as AppPustakawanRouteRouteImport } from './routes/_app/pustakawan/route'
+import { Route as AppKatalogIndexRouteImport } from './routes/_app/katalog/index'
+import { Route as AppKatalogBookIdRouteImport } from './routes/_app/katalog/$bookId'
 import { Route as AppPustakawanAnggotaRouteImport } from './routes/_app/pustakawan/anggota'
+import { Route as AppPustakawanKategoriRouteImport } from './routes/_app/pustakawan/kategori'
+import { Route as AppPustakawanKoleksiIndexRouteImport } from './routes/_app/pustakawan/koleksi/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,11 +56,32 @@ const AppPustakawanRouteRoute = AppPustakawanRouteRouteImport.update({
   path: '/pustakawan',
   getParentRoute: () => AppRoute,
 } as any)
+const AppKatalogIndexRoute = AppKatalogIndexRouteImport.update({
+  id: '/katalog/',
+  path: '/katalog/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppKatalogBookIdRoute = AppKatalogBookIdRouteImport.update({
+  id: '/katalog/$bookId',
+  path: '/katalog/$bookId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPustakawanAnggotaRoute = AppPustakawanAnggotaRouteImport.update({
   id: '/anggota',
   path: '/anggota',
   getParentRoute: () => AppPustakawanRouteRoute,
 } as any)
+const AppPustakawanKategoriRoute = AppPustakawanKategoriRouteImport.update({
+  id: '/kategori',
+  path: '/kategori',
+  getParentRoute: () => AppPustakawanRouteRoute,
+} as any)
+const AppPustakawanKoleksiIndexRoute =
+  AppPustakawanKoleksiIndexRouteImport.update({
+    id: '/koleksi/',
+    path: '/koleksi/',
+    getParentRoute: () => AppPustakawanRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,7 +90,11 @@ export interface FileRoutesByFullPath {
   '/beranda': typeof AppBerandaRoute
   '/ganti-password': typeof AppGantiPasswordRoute
   '/profil': typeof AppProfilRoute
+  '/katalog/$bookId': typeof AppKatalogBookIdRoute
   '/pustakawan/anggota': typeof AppPustakawanAnggotaRoute
+  '/pustakawan/kategori': typeof AppPustakawanKategoriRoute
+  '/katalog/': typeof AppKatalogIndexRoute
+  '/pustakawan/koleksi/': typeof AppPustakawanKoleksiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -74,7 +103,11 @@ export interface FileRoutesByTo {
   '/beranda': typeof AppBerandaRoute
   '/ganti-password': typeof AppGantiPasswordRoute
   '/profil': typeof AppProfilRoute
+  '/katalog/$bookId': typeof AppKatalogBookIdRoute
   '/pustakawan/anggota': typeof AppPustakawanAnggotaRoute
+  '/pustakawan/kategori': typeof AppPustakawanKategoriRoute
+  '/katalog': typeof AppKatalogIndexRoute
+  '/pustakawan/koleksi': typeof AppPustakawanKoleksiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,7 +118,11 @@ export interface FileRoutesById {
   '/_app/beranda': typeof AppBerandaRoute
   '/_app/ganti-password': typeof AppGantiPasswordRoute
   '/_app/profil': typeof AppProfilRoute
+  '/_app/katalog/$bookId': typeof AppKatalogBookIdRoute
   '/_app/pustakawan/anggota': typeof AppPustakawanAnggotaRoute
+  '/_app/pustakawan/kategori': typeof AppPustakawanKategoriRoute
+  '/_app/katalog/': typeof AppKatalogIndexRoute
+  '/_app/pustakawan/koleksi/': typeof AppPustakawanKoleksiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,7 +133,11 @@ export interface FileRouteTypes {
     | '/beranda'
     | '/ganti-password'
     | '/profil'
+    | '/katalog/$bookId'
     | '/pustakawan/anggota'
+    | '/pustakawan/kategori'
+    | '/katalog/'
+    | '/pustakawan/koleksi/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -105,7 +146,11 @@ export interface FileRouteTypes {
     | '/beranda'
     | '/ganti-password'
     | '/profil'
+    | '/katalog/$bookId'
     | '/pustakawan/anggota'
+    | '/pustakawan/kategori'
+    | '/katalog'
+    | '/pustakawan/koleksi'
   id:
     | '__root__'
     | '/'
@@ -115,7 +160,11 @@ export interface FileRouteTypes {
     | '/_app/beranda'
     | '/_app/ganti-password'
     | '/_app/profil'
+    | '/_app/katalog/$bookId'
     | '/_app/pustakawan/anggota'
+    | '/_app/pustakawan/kategori'
+    | '/_app/katalog/'
+    | '/_app/pustakawan/koleksi/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -175,6 +224,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPustakawanRouteRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/katalog/': {
+      id: '/_app/katalog/'
+      path: '/katalog'
+      fullPath: '/katalog/'
+      preLoaderRoute: typeof AppKatalogIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/katalog/$bookId': {
+      id: '/_app/katalog/$bookId'
+      path: '/katalog/$bookId'
+      fullPath: '/katalog/$bookId'
+      preLoaderRoute: typeof AppKatalogBookIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/pustakawan/anggota': {
       id: '/_app/pustakawan/anggota'
       path: '/anggota'
@@ -182,15 +245,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPustakawanAnggotaRouteImport
       parentRoute: typeof AppPustakawanRouteRoute
     }
+    '/_app/pustakawan/kategori': {
+      id: '/_app/pustakawan/kategori'
+      path: '/kategori'
+      fullPath: '/pustakawan/kategori'
+      preLoaderRoute: typeof AppPustakawanKategoriRouteImport
+      parentRoute: typeof AppPustakawanRouteRoute
+    }
+    '/_app/pustakawan/koleksi/': {
+      id: '/_app/pustakawan/koleksi/'
+      path: '/koleksi'
+      fullPath: '/pustakawan/koleksi/'
+      preLoaderRoute: typeof AppPustakawanKoleksiIndexRouteImport
+      parentRoute: typeof AppPustakawanRouteRoute
+    }
   }
 }
 
 interface AppPustakawanRouteRouteChildren {
   AppPustakawanAnggotaRoute: typeof AppPustakawanAnggotaRoute
+  AppPustakawanKategoriRoute: typeof AppPustakawanKategoriRoute
+  AppPustakawanKoleksiIndexRoute: typeof AppPustakawanKoleksiIndexRoute
 }
 
 const AppPustakawanRouteRouteChildren: AppPustakawanRouteRouteChildren = {
   AppPustakawanAnggotaRoute: AppPustakawanAnggotaRoute,
+  AppPustakawanKategoriRoute: AppPustakawanKategoriRoute,
+  AppPustakawanKoleksiIndexRoute: AppPustakawanKoleksiIndexRoute,
 }
 
 const AppPustakawanRouteRouteWithChildren =
@@ -201,6 +282,8 @@ interface AppRouteChildren {
   AppBerandaRoute: typeof AppBerandaRoute
   AppGantiPasswordRoute: typeof AppGantiPasswordRoute
   AppProfilRoute: typeof AppProfilRoute
+  AppKatalogBookIdRoute: typeof AppKatalogBookIdRoute
+  AppKatalogIndexRoute: typeof AppKatalogIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -208,6 +291,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppBerandaRoute: AppBerandaRoute,
   AppGantiPasswordRoute: AppGantiPasswordRoute,
   AppProfilRoute: AppProfilRoute,
+  AppKatalogBookIdRoute: AppKatalogBookIdRoute,
+  AppKatalogIndexRoute: AppKatalogIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

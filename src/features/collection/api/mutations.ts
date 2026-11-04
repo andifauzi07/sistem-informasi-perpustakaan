@@ -22,7 +22,7 @@ export function useCreateCategoryMutation() {
       return unwrap(res)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.categories() })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.categories() })
     },
   })
 }
@@ -43,8 +43,8 @@ export function useUpdateCategoryMutation() {
       return unwrap(res)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.categories() })
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.categories() })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.all })
     },
   })
 }
@@ -57,7 +57,7 @@ export function useDeleteCategoryMutation() {
       return unwrap(res)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.categories() })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.categories() })
     },
   })
 }
@@ -76,7 +76,7 @@ export function useCreateBookMutation() {
         isbn: data.isbn || null,
         category_id: data.categoryId,
         synopsis: data.synopsis || null,
-        language: data.language || 'Indonesia',
+        language: data.language,
         pages: data.pages ?? null,
         edition: data.edition || null,
         call_number: data.callNumber || null,
@@ -85,8 +85,8 @@ export function useCreateBookMutation() {
       return unwrap(res)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
-      queryClient.invalidateQueries({ queryKey: ['catalog'] })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ['catalog'] })
     },
   })
 }
@@ -105,7 +105,7 @@ export function useUpdateBookMutation() {
           isbn: data.isbn || null,
           category_id: data.categoryId,
           synopsis: data.synopsis || null,
-          language: data.language || 'Indonesia',
+          language: data.language,
           pages: data.pages ?? null,
           edition: data.edition || null,
           call_number: data.callNumber || null,
@@ -117,9 +117,9 @@ export function useUpdateBookMutation() {
       return unwrap(res)
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.bookDetail(variables.id) })
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
-      queryClient.invalidateQueries({ queryKey: ['catalog'] })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.bookDetail(variables.id) })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ['catalog'] })
     },
   })
 }
@@ -132,8 +132,8 @@ export function useDeleteBookMutation() {
       return unwrap(res)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
-      queryClient.invalidateQueries({ queryKey: ['catalog'] })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ['catalog'] })
     },
   })
 }
@@ -154,7 +154,7 @@ export function useAddCopiesMutation() {
 
       const res = await supabase.rpc('add_book_copies', {
         p_book_id: data.bookId,
-        p_quantity: data.mode === 'auto' ? data.quantity : manualCodes?.length || 1,
+        p_quantity: data.mode === 'auto' ? data.quantity ?? 1 : manualCodes?.length || 1,
         p_codes: manualCodes,
         p_source: data.source || null,
         p_acquired_at: data.acquiredAt || null,
@@ -163,10 +163,10 @@ export function useAddCopiesMutation() {
       return unwrap(res)
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.bookCopies(variables.bookId) })
-      queryClient.invalidateQueries({ queryKey: collectionKeys.bookDetail(variables.bookId) })
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
-      queryClient.invalidateQueries({ queryKey: ['catalog'] })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.bookCopies(variables.bookId) })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.bookDetail(variables.bookId) })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ['catalog'] })
     },
   })
 }
@@ -183,10 +183,10 @@ export function useSetCopyStatusMutation() {
       return unwrap(res)
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.bookCopies(variables.bookId) })
-      queryClient.invalidateQueries({ queryKey: collectionKeys.bookDetail(variables.bookId) })
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
-      queryClient.invalidateQueries({ queryKey: ['catalog'] })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.bookCopies(variables.bookId) })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.bookDetail(variables.bookId) })
+      void queryClient.invalidateQueries({ queryKey: collectionKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ['catalog'] })
     },
   })
 }

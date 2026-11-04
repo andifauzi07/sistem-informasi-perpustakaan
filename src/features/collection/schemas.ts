@@ -41,22 +41,17 @@ export const bookFormSchema = z.object({
     .min(1, 'Penulis wajib diisi')
     .max(300, 'Nama penulis maksimal 300 karakter'),
   publisher: z.string().trim().max(100, 'Penerbit maksimal 100 karakter').optional(),
-  publicationYear: z.coerce
+  publicationYear: z
     .number()
     .int()
     .min(1800, 'Tahun minimal 1800')
     .max(2100, 'Tahun maksimal 2100')
-    .optional()
-    .nullable(),
-  isbn: z
-    .string()
-    .trim()
-    .transform((val) => val.replace(/[^0-9X]/gi, ''))
     .optional(),
-  categoryId: z.coerce.number().int().positive('Kategori wajib dipilih'),
+  isbn: z.string().trim().optional(),
+  categoryId: z.number().int().positive('Kategori wajib dipilih'),
   synopsis: z.string().trim().optional(),
-  language: z.string().trim().default('Indonesia'),
-  pages: z.coerce.number().int().positive('Jumlah halaman harus lebih dari 0').optional().nullable(),
+  language: z.string().trim(),
+  pages: z.number().int().positive('Jumlah halaman harus lebih dari 0').optional(),
   edition: z.string().trim().max(50, 'Edisi maksimal 50 karakter').optional(),
   callNumber: z.string().trim().max(50, 'Nomor panggil/lokasi rak maksimal 50 karakter').optional(),
   coverPath: z.string().optional().nullable(),
@@ -68,15 +63,18 @@ export type BookFormData = z.infer<typeof bookFormSchema>
 export const addCopiesSchema = z
   .object({
     bookId: z.number().int().positive(),
-    mode: z.enum(['auto', 'manual']).default('auto'),
-    quantity: z.coerce.number().int().min(1, 'Minimal 1 eksemplar').max(100, 'Maksimal 100 eksemplar').default(1),
-    codes: z.string().optional(), // teks dipisah koma/baris baru jika manual
+    mode: z.enum(['auto', 'manual']),
+    quantity: z.number().int().min(1, 'Minimal 1 eksemplar').max(100, 'Maksimal 100 eksemplar').optional(),
+    codes: z.string().optional(),
     source: copySourceEnum.optional().nullable(),
     acquiredAt: z.string().optional().nullable(),
-    price: z.coerce.number().int().min(0, 'Harga tidak boleh negatif').optional().nullable(),
+    price: z.number().int().min(0, 'Harga tidak boleh negatif').optional().nullable(),
   })
   .refine(
     (data) => {
+      if (data.mode === 'auto') {
+        return typeof data.quantity === 'number' && data.quantity >= 1 && data.quantity <= 100
+      }
       if (data.mode === 'manual') {
         const list = (data.codes || '')
           .split(/[\n,]+/)
