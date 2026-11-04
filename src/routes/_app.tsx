@@ -4,7 +4,7 @@ import { useLogoutMutation } from '@/features/auth/api/mutations'
 import { ROLE_LABELS } from '@/lib/labels'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { BookOpen, User, LogOut, Users, Home } from 'lucide-react'
+import { BookOpen, User, LogOut, Users, Home, Library, Tag } from 'lucide-react'
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
@@ -64,16 +64,47 @@ function AppLayout() {
                   <span>Beranda</span>
                 </Link>
 
+                <Link
+                  to="/katalog"
+                  search={{ q: '', category: undefined, availableOnly: false, sort: 'relevance', page: 1 }}
+                  activeProps={{ className: 'text-primary font-semibold' }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                >
+                  <BookOpen className="size-4" />
+                  <span>Katalog</span>
+                </Link>
+
                 {isLibrarian && (
-                  <Link
-                    to="/pustakawan/anggota"
-                    search={{ q: '', role: 'all', status: 'all', page: 1 }}
-                    activeProps={{ className: 'text-primary font-semibold' }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
-                  >
-                    <Users className="size-4" />
-                    <span>Anggota</span>
-                  </Link>
+                  <>
+                    <Link
+                      to="/pustakawan/koleksi"
+                      search={{ q: '', categoryId: undefined, page: 1 }}
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                    >
+                      <Library className="size-4" />
+                      <span>Koleksi</span>
+                    </Link>
+
+                    <Link
+                      to="/pustakawan/kategori"
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                    >
+                      <Tag className="size-4" />
+                      <span>Kategori</span>
+                    </Link>
+
+                    <Link
+                      to="/pustakawan/anggota"
+                      search={{ q: '', role: 'all', status: 'all', page: 1 }}
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                    >
+                      <Users className="size-4" />
+                      <span>Anggota</span>
+                    </Link>
+                  </>
                 )}
               </nav>
             )}

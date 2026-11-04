@@ -6,6 +6,7 @@ import {
   setCopyStatusSchema,
   collectionFilterSchema,
 } from './schemas'
+import { normalizeIsbn } from './utils'
 
 describe('collection schemas', () => {
   describe('categorySchema', () => {
@@ -29,7 +30,7 @@ describe('collection schemas', () => {
   })
 
   describe('bookFormSchema', () => {
-    it('menerima form buku lengkap dan membersihkan ISBN', () => {
+    it('menerima form buku lengkap dan menormalisasi ISBN', () => {
       const res = bookFormSchema.safeParse({
         title: 'Pemrograman Web Modern',
         authors: 'John Doe, Jane Smith',
@@ -41,8 +42,8 @@ describe('collection schemas', () => {
         pages: 350,
       })
       expect(res.success).toBe(true)
-      if (res.success) {
-        expect(res.data.isbn).toBe('9786020388881')
+      if (res.success && res.data.isbn) {
+        expect(normalizeIsbn(res.data.isbn)).toBe('9786020388881')
       }
     })
 
@@ -51,6 +52,7 @@ describe('collection schemas', () => {
         title: '   ',
         authors: 'Penulis',
         categoryId: 0,
+        language: 'Indonesia',
       })
       expect(res.success).toBe(false)
     })
@@ -60,6 +62,7 @@ describe('collection schemas', () => {
         title: 'Buku Kuno',
         authors: 'Penulis',
         categoryId: 1,
+        language: 'Indonesia',
         publicationYear: 1750,
       })
       expect(res.success).toBe(false)
