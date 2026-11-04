@@ -1,5 +1,5 @@
 begin;
-select plan(20);
+select plan(23);
 
 -- 1. Struktur Tabel & View
 select has_table('public', 'categories', 'Tabel categories harus ada');
