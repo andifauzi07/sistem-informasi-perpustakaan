@@ -116,12 +116,12 @@ select throws_ok(
 
 -- 5.4 RPC set_copy_status (TC-COL-06 & Transisi Ilegal)
 select lives_ok(
-  $$ select public.set_copy_status((select id from public.book_copies where code = 'B000001'), 'damaged', 'Halaman sobek') $$,
+  $$ select public.set_copy_status((select id from public.book_copies where book_id = 100 order by id asc limit 1), 'damaged', 'Halaman sobek') $$,
   'TC-COL-06: Berhasil mengubah status eksemplar available menjadi damaged'
 );
 
 select throws_ok(
-  $$ select public.set_copy_status((select id from public.book_copies where code = 'B000001'), 'on_loan') $$,
+  $$ select public.set_copy_status((select id from public.book_copies where book_id = 100 order by id asc limit 1), 'on_loan') $$,
   'P0001',
   'INVALID_STATUS_TRANSITION',
   'Melempar INVALID_STATUS_TRANSITION pada transisi manual ilegal'
@@ -148,14 +148,20 @@ select results_eq(
 );
 
 -- 5.7 RPC delete_book & Proteksi Riwayat Transaksi (TC-COL-07)
--- Buat mock tabel loans sementara untuk menguji BR-17
+-- Reset role ke superuser untuk membuat mock tabel loans sementara
+reset role;
+
 create table public.loans (
   id bigint generated always as identity primary key,
   copy_id bigint references public.book_copies(id)
 );
 
 insert into public.loans (copy_id)
-values ((select id from public.book_copies where code = 'B000001'));
+values ((select id from public.book_copies where book_id = 100 limit 1));
+
+-- Kembali ke role pustakawan terotentikasi
+set local role authenticated;
+set local "request.jwt.claims" to '{"sub": "33333333-3333-3333-3333-333333333333"}';
 
 select throws_ok(
   $$ select public.delete_book(100) $$,
@@ -165,7 +171,11 @@ select throws_ok(
 );
 
 -- Hapus mock loans dan verifikasi penghapusan buku berhasil
+reset role;
 drop table public.loans;
+
+set local role authenticated;
+set local "request.jwt.claims" to '{"sub": "33333333-3333-3333-3333-333333333333"}';
 
 select lives_ok(
   $$ select public.delete_book(100) $$,
