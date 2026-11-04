@@ -1,119 +1,432 @@
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
-  
   "graphql_public": {
-          Tables: {
-            [_ in never]: never
-          }
-          Views: {
-            [_ in never]: never
-          }
-          Functions: {
-            "graphql":
-{ Args: { "extensions"?: Json,"operationName"?: string,"query"?: string,"variables"?: Json }; Returns: Json
-                           }
-          }
-          Enums: {
-            [_ in never]: never
-          }
-          CompositeTypes: {
-            [_ in never]: never
-          }
-        },"public": {
-          Tables: {
-            "activity_logs": {
-                  Row: {
-                    "action": string,"actor_id": string | null,"created_at": string,"details": NonNullable<Json>,"entity_id": string | null,"entity_type": string | null,"id": number
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "action": string,"actor_id"?: string | null,"created_at"?: string,"details"?: NonNullable<Json>,"entity_id"?: string | null,"entity_type"?: string | null,"id"?: never
-                  }
-                  Update: {
-                    "action"?: string,"actor_id"?: string | null,"created_at"?: string,"details"?: NonNullable<Json>,"entity_id"?: string | null,"entity_type"?: string | null,"id"?: never
-                  }
-                  Relationships: [
-                    {
-      foreignKeyName: "activity_logs_actor_id_fkey"
-      columns: ["actor_id"]
-isOneToOne: false
-      referencedRelation: "profiles"
-      referencedColumns: ["id"]
+    Tables: {
+      [_ in never]: never
     }
-                  ]
-                },"loan_policies": {
-                  Row: {
-                    "daily_fine": number,"loan_days": number,"max_active_loans": number,"pickup_days": number,"role": Database["public"]['Enums']["app_role"],"updated_at": string,"updated_by": string | null
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "daily_fine": number,"loan_days": number,"max_active_loans": number,"pickup_days": number,"role": Database["public"]['Enums']["app_role"],"updated_at"?: string,"updated_by"?: string | null
-                  }
-                  Update: {
-                    "daily_fine"?: number,"loan_days"?: number,"max_active_loans"?: number,"pickup_days"?: number,"role"?: Database["public"]['Enums']["app_role"],"updated_at"?: string,"updated_by"?: string | null
-                  }
-                  Relationships: [
-                    {
-      foreignKeyName: "loan_policies_updated_by_fkey"
-      columns: ["updated_by"]
-isOneToOne: false
-      referencedRelation: "profiles"
-      referencedColumns: ["id"]
+    Views: {
+      [_ in never]: never
     }
-                  ]
-                },"majors": {
-                  Row: {
-                    "code": string,"created_at": string,"id": number,"is_active": boolean,"name": string,"updated_at": string
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "code": string,"created_at"?: string,"id"?: never,"is_active"?: boolean,"name": string,"updated_at"?: string
-                  }
-                  Update: {
-                    "code"?: string,"created_at"?: string,"id"?: never,"is_active"?: boolean,"name"?: string,"updated_at"?: string
-                  }
-                  Relationships: [
-                    
-                  ]
-                },"profiles": {
-                  Row: {
-                    "class_name": string | null,"created_at": string,"full_name": string,"id": string,"is_active": boolean,"login_id": string | null,"major_id": number | null,"member_code": string,"must_change_password": boolean,"phone": string | null,"photo_path": string | null,"position": string | null,"role": Database["public"]['Enums']["app_role"],"subject": string | null,"updated_at": string
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "class_name"?: string | null,"created_at"?: string,"full_name": string,"id": string,"is_active"?: boolean,"login_id"?: never,"major_id"?: number | null,"member_code": string,"must_change_password"?: boolean,"phone"?: string | null,"photo_path"?: string | null,"position"?: string | null,"role": Database["public"]['Enums']["app_role"],"subject"?: string | null,"updated_at"?: string
-                  }
-                  Update: {
-                    "class_name"?: string | null,"created_at"?: string,"full_name"?: string,"id"?: string,"is_active"?: boolean,"login_id"?: never,"major_id"?: number | null,"member_code"?: string,"must_change_password"?: boolean,"phone"?: string | null,"photo_path"?: string | null,"position"?: string | null,"role"?: Database["public"]['Enums']["app_role"],"subject"?: string | null,"updated_at"?: string
-                  }
-                  Relationships: [
-                    {
-      foreignKeyName: "profiles_major_id_fkey"
-      columns: ["major_id"]
-isOneToOne: false
-      referencedRelation: "majors"
-      referencedColumns: ["id"]
+    Functions: {
+      "graphql": {
+        Args: { "extensions"?: Json, "operationName"?: string, "query"?: string, "variables"?: Json }
+        Returns: Json
+      }
     }
-                  ]
-                }
-          }
-          Views: {
-            [_ in never]: never
-          }
-          Functions: {
-            "complete_password_change":
-{ Args: Record<PropertyKey, never>; Returns: undefined
-                           }
-          }
-          Enums: {
-            "app_role": "student"|"teacher"|"librarian"
-          }
-          CompositeTypes: {
-            [_ in never]: never
-          }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  "public": {
+    Tables: {
+      "activity_logs": {
+        Row: {
+          "action": string
+          "actor_id": string | null
+          "created_at": string
+          "details": NonNullable<Json>
+          "entity_id": string | null
+          "entity_type": string | null
+          "id": number
         }
+        ComputedFields: never
+        Insert: {
+          "action": string
+          "actor_id"?: string | null
+          "created_at"?: string
+          "details"?: NonNullable<Json>
+          "entity_id"?: string | null
+          "entity_type"?: string | null
+          "id"?: never
+        }
+        Update: {
+          "action"?: string
+          "actor_id"?: string | null
+          "created_at"?: string
+          "details"?: NonNullable<Json>
+          "entity_id"?: string | null
+          "entity_type"?: string | null
+          "id"?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "categories": {
+        Row: {
+          "created_at": string
+          "ddc_code": string | null
+          "id": number
+          "name": string
+        }
+        ComputedFields: never
+        Insert: {
+          "created_at"?: string
+          "ddc_code"?: string | null
+          "id"?: never
+          "name": string
+        }
+        Update: {
+          "created_at"?: string
+          "ddc_code"?: string | null
+          "id"?: never
+          "name"?: string
+        }
+        Relationships: []
+      }
+      "books": {
+        Row: {
+          "authors": string
+          "call_number": string | null
+          "category_id": number
+          "cover_path": string | null
+          "created_at": string
+          "created_by": string | null
+          "edition": string | null
+          "id": number
+          "isbn": string | null
+          "language": string
+          "pages": number | null
+          "publication_year": number | null
+          "publisher": string | null
+          "synopsis": string | null
+          "title": string
+          "updated_at": string
+        }
+        ComputedFields: never
+        Insert: {
+          "authors": string
+          "call_number"?: string | null
+          "category_id": number
+          "cover_path"?: string | null
+          "created_at"?: string
+          "created_by"?: string | null
+          "edition"?: string | null
+          "id"?: never
+          "isbn"?: string | null
+          "language"?: string
+          "pages"?: number | null
+          "publication_year"?: number | null
+          "publisher"?: string | null
+          "synopsis"?: string | null
+          "title": string
+          "updated_at"?: string
+        }
+        Update: {
+          "authors"?: string
+          "call_number"?: string | null
+          "category_id"?: number
+          "cover_path"?: string | null
+          "created_at"?: string
+          "created_by"?: string | null
+          "edition"?: string | null
+          "id"?: never
+          "isbn"?: string | null
+          "language"?: string
+          "pages"?: number | null
+          "publication_year"?: number | null
+          "publisher"?: string | null
+          "synopsis"?: string | null
+          "title"?: string
+          "updated_at"?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "books_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "books_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "book_copies": {
+        Row: {
+          "acquired_at": string | null
+          "book_id": number
+          "code": string
+          "created_at": string
+          "id": number
+          "notes": string | null
+          "price": number | null
+          "source": Database["public"]["Enums"]["copy_source"] | null
+          "status": Database["public"]["Enums"]["copy_status"]
+          "updated_at": string
+        }
+        ComputedFields: never
+        Insert: {
+          "acquired_at"?: string | null
+          "book_id": number
+          "code": string
+          "created_at"?: string
+          "id"?: never
+          "notes"?: string | null
+          "price"?: number | null
+          "source"?: Database["public"]["Enums"]["copy_source"] | null
+          "status"?: Database["public"]["Enums"]["copy_status"]
+          "updated_at"?: string
+        }
+        Update: {
+          "acquired_at"?: string | null
+          "book_id"?: number
+          "code"?: string
+          "created_at"?: string
+          "id"?: never
+          "notes"?: string | null
+          "price"?: number | null
+          "source"?: Database["public"]["Enums"]["copy_source"] | null
+          "status"?: Database["public"]["Enums"]["copy_status"]
+          "updated_at"?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_copies_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "loan_policies": {
+        Row: {
+          "daily_fine": number
+          "loan_days": number
+          "max_active_loans": number
+          "pickup_days": number
+          "role": Database["public"]['Enums']["app_role"]
+          "updated_at": string
+          "updated_by": string | null
+        }
+        ComputedFields: never
+        Insert: {
+          "daily_fine": number
+          "loan_days": number
+          "max_active_loans": number
+          "pickup_days": number
+          "role": Database["public"]['Enums']["app_role"]
+          "updated_at"?: string
+          "updated_by"?: string | null
+        }
+        Update: {
+          "daily_fine"?: number
+          "loan_days"?: number
+          "max_active_loans"?: number
+          "pickup_days"?: number
+          "role"?: Database["public"]['Enums']["app_role"]
+          "updated_at"?: string
+          "updated_by"?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_policies_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "majors": {
+        Row: {
+          "code": string
+          "created_at": string
+          "id": number
+          "is_active": boolean
+          "name": string
+          "updated_at": string
+        }
+        ComputedFields: never
+        Insert: {
+          "code": string
+          "created_at"?: string
+          "id"?: never
+          "is_active"?: boolean
+          "name": string
+          "updated_at"?: string
+        }
+        Update: {
+          "code"?: string
+          "created_at"?: string
+          "id"?: never
+          "is_active"?: boolean
+          "name"?: string
+          "updated_at"?: string
+        }
+        Relationships: []
+      }
+      "profiles": {
+        Row: {
+          "class_name": string | null
+          "created_at": string
+          "full_name": string
+          "id": string
+          "is_active": boolean
+          "login_id": string | null
+          "major_id": number | null
+          "member_code": string
+          "must_change_password": boolean
+          "phone": string | null
+          "photo_path": string | null
+          "position": string | null
+          "role": Database["public"]['Enums']["app_role"]
+          "subject": string | null
+          "updated_at": string
+        }
+        ComputedFields: never
+        Insert: {
+          "class_name"?: string | null
+          "created_at"?: string
+          "full_name": string
+          "id": string
+          "is_active"?: boolean
+          "login_id"?: never
+          "major_id"?: number | null
+          "member_code": string
+          "must_change_password"?: boolean
+          "phone"?: string | null
+          "photo_path"?: string | null
+          "position"?: string | null
+          "role": Database["public"]['Enums']["app_role"]
+          "subject"?: string | null
+          "updated_at"?: string
+        }
+        Update: {
+          "class_name"?: string | null
+          "created_at"?: string
+          "full_name"?: string
+          "id"?: string
+          "is_active"?: boolean
+          "login_id"?: never
+          "major_id"?: number | null
+          "member_code"?: string
+          "must_change_password"?: boolean
+          "phone"?: string | null
+          "photo_path"?: string | null
+          "position"?: string | null
+          "role"?: Database["public"]['Enums']["app_role"]
+          "subject"?: string | null
+          "updated_at"?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_major_id_fkey"
+            columns: ["major_id"]
+            isOneToOne: false
+            referencedRelation: "majors"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+    }
+    Views: {
+      "v_book_availability": {
+        Row: {
+          "available_copies": number | null
+          "book_id": number | null
+          "on_loan_copies": number | null
+          "reserved_copies": number | null
+          "total_copies": number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_copies_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+    }
+    Functions: {
+      "add_book_copies": {
+        Args: {
+          "p_acquired_at"?: string | null
+          "p_book_id": number
+          "p_codes"?: string[] | null
+          "p_price"?: number | null
+          "p_quantity"?: number
+          "p_source"?: Database["public"]["Enums"]["copy_source"] | null
+        }
+        Returns: Database["public"]["Tables"]["book_copies"]["Row"][]
+      }
+      "complete_password_change": {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      "delete_book": {
+        Args: {
+          "p_book_id": number
+        }
+        Returns: undefined
+      }
+      "search_catalog": {
+        Args: {
+          "p_available_only"?: boolean
+          "p_category_id"?: number | null
+          "p_limit"?: number
+          "p_offset"?: number
+          "p_query"?: string | null
+          "p_sort"?: string | null
+        }
+        Returns: {
+          "available_copies": number
+          "authors": string
+          "call_number": string | null
+          "category_id": number
+          "category_name": string
+          "cover_path": string | null
+          "created_at": string
+          "edition": string | null
+          "id": number
+          "isbn": string | null
+          "language": string
+          "pages": number | null
+          "publication_year": number | null
+          "publisher": string | null
+          "synopsis": string | null
+          "title": string
+          "total_copies": number
+          "total_count": number
+          "updated_at": string
+        }[]
+      }
+      "set_copy_status": {
+        Args: {
+          "p_copy_id": number
+          "p_notes"?: string | null
+          "p_status": Database["public"]["Enums"]["copy_status"]
+        }
+        Returns: Database["public"]["Tables"]["book_copies"]["Row"]
+      }
+    }
+    Enums: {
+      "app_role": "student" | "teacher" | "librarian"
+      "copy_source": "purchase" | "donation" | "government" | "other"
+      "copy_status": "available" | "reserved" | "on_loan" | "damaged" | "lost" | "withdrawn"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
 
 type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
@@ -129,21 +442,25 @@ export type Tables<
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-  ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-      Row: infer R
-    }
-    ? R
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
     : never
-  : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
@@ -153,20 +470,22 @@ export type TablesInsert<
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-      Insert: infer I
-    }
-    ? I
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
-  : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
@@ -176,20 +495,22 @@ export type TablesUpdate<
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-      Update: infer U
-    }
-    ? U
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
     : never
-  : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
@@ -199,7 +520,7 @@ export type Enums<
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
@@ -214,7 +535,7 @@ export type CompositeTypes<
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
@@ -223,12 +544,13 @@ export type CompositeTypes<
 
 export const Constants = {
   "graphql_public": {
-          Enums: {
-            
-          }
-        },"public": {
-          Enums: {
-            "app_role": ["student", "teacher", "librarian"]
-          }
-        }
+    Enums: {}
+  },
+  "public": {
+    Enums: {
+      "app_role": ["student", "teacher", "librarian"],
+      "copy_source": ["purchase", "donation", "government", "other"],
+      "copy_status": ["available", "reserved", "on_loan", "damaged", "lost", "withdrawn"]
+    }
+  }
 } as const
