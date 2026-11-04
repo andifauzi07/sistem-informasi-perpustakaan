@@ -1,5 +1,6 @@
 -- Migration: 20261104120000_collection_catalog.sql
 -- Modul: COL (Koleksi) & CAT (Katalog) (Milestone M2)
+-- Kebutuhan: FR-COL-01 s.d. FR-COL-07, FR-CAT-01 s.d. FR-CAT-05
 
 -- 1. Ekstensi & Enum
 create extension if not exists pg_trgm with schema extensions;
