@@ -12,16 +12,16 @@
 
 ## 3. Antarmuka Bahan Ajar Siswa & Guru
 
-- [ ] 3.1 Buat antarmuka penelusuran bahan ajar siswa di `src/routes/_app/bahan-ajar/index.tsx` dengan pencarian dan filter tingkat/jurusan (FR-MAT-03)
-- [ ] 3.2 Implementasikan tombol unduh dengan pemanggilan RPC `increment_material_downloads` dan unduhan via signed URL (FR-MAT-03, FR-MAT-05, TC-MAT-03)
-- [ ] 3.3 Buat halaman kelola bahan ajar guru di `src/routes/_app/guru/bahan-ajar/index.tsx` dengan formulir unggah berkas (FR-MAT-01, FR-MAT-02, TC-MAT-01, TC-MAT-02)
-- [ ] 3.4 Buat aksi pustakawan untuk menyembunyikan (*hide*) bahan ajar dengan dialog alasan wajib (FR-MAT-04, TC-MAT-05)
+- [x] 3.1 Buat antarmuka penelusuran bahan ajar siswa di `src/routes/_app/bahan-ajar/index.tsx` dengan pencarian dan filter tingkat/jurusan (FR-MAT-03)
+- [x] 3.2 Implementasikan tombol unduh dengan pemanggilan RPC `increment_material_downloads` dan unduhan via signed URL (FR-MAT-03, FR-MAT-05, TC-MAT-03)
+- [x] 3.3 Buat halaman kelola bahan ajar guru di `src/routes/_app/guru/bahan-ajar/index.tsx` dengan formulir unggah berkas (FR-MAT-01, FR-MAT-02, TC-MAT-01, TC-MAT-02)
+- [x] 3.4 Buat aksi pustakawan untuk menyembunyikan (*hide*) bahan ajar dengan dialog alasan wajib (FR-MAT-04, TC-MAT-05)
 
 ## 4. Antarmuka Cetak Kartu Anggota Pustakawan
 
-- [ ] 4.1 Buat halaman cetak kartu anggota di `src/routes/_app/pustakawan/kartu-anggota.tsx` dengan filter peran, kelas, dan jurusan
-- [ ] 4.2 Buat dialog cetak kartu individu ukuran ID-1 (85,6 × 54 mm) memuat logo sekolah, profil anggota, dan QR Code (FR-CARD-01, FR-CARD-03, BR-20, TC-CARD-01)
-- [ ] 4.3 Buat fitur cetak massal lembar A4 berisi 10 kartu per halaman dengan garis potong pembantu (FR-CARD-02, TC-CARD-02)
+- [x] 4.1 Buat halaman cetak kartu anggota di `src/routes/_app/pustakawan/kartu-anggota.tsx` dengan filter peran, kelas, dan jurusan
+- [x] 4.2 Buat dialog cetak kartu individu ukuran ID-1 (85,6 × 54 mm) memuat logo sekolah, profil anggota, dan QR Code (FR-CARD-01, FR-CARD-03, BR-20, TC-CARD-01)
+- [x] 4.3 Buat fitur cetak massal lembar A4 berisi 10 kartu per halaman dengan garis potong pembantu (FR-CARD-02, TC-CARD-02)
 
 ## 5. Pengujian & Penyiapan Bukti Reviewer
 

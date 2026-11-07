@@ -655,8 +655,8 @@ function MejaSirkulasiPage() {
                           size="sm"
                           variant="secondary"
                           onClick={() => {
-                            setCheckinCopyInput(item.copy_code!)
-                            void handleLookupCopyForCheckin(item.copy_code!)
+                            setCheckinCopyInput(item.copy_code)
+                            void handleLookupCopyForCheckin(item.copy_code)
                           }}
                         >
                           Proses

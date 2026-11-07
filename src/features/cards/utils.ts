@@ -48,7 +48,7 @@ export async function generateQrCodeDataUrl(text: string): Promise<string> {
             }
           }
         )
-      } catch (renderError) {
+      } catch {
         // Fallback jika canvas tidak mendukung context 2d di test environment
         resolve('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=')
       }

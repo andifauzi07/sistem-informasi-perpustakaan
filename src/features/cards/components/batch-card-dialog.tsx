@@ -107,7 +107,9 @@ export function BatchCardDialog({
           </Button>
           <Button
             type="button"
-            onClick={handleDownload}
+            onClick={() => {
+              void handleDownload()
+            }}
             disabled={isGenerating || count === 0}
             className="gap-2"
           >
