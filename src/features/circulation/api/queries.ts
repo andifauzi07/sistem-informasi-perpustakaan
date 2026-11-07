@@ -9,6 +9,27 @@ import type {
 
 const PAGE_SIZE = 20
 
+function isMissingTableError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+  const code = (error as { code?: string }).code
+  const msg = ((error as { message?: string }).message || '').toLowerCase()
+  return (
+    code === 'PGRST205' ||
+    code === 'PGRST202' ||
+    code === '42P01' ||
+    msg.includes('schema cache') ||
+    msg.includes('does not exist')
+  )
+}
+
+function unwrapOrEmpty<T>(res: { data: T[] | null; error: Error | null }): T[] {
+  if (res.error) {
+    if (isMissingTableError(res.error)) return []
+    throw res.error
+  }
+  return res.data || []
+}
+
 export interface MemberLookupResult {
   id: string
   member_code: string
@@ -90,9 +111,9 @@ export function memberCirculationSummaryQueryOptions(memberId: string) {
       ])
 
       const profile = unwrap(profileRes)
-      const requests = unwrap(requestsRes) || []
-      const activeLoans = unwrap(activeLoansRes) || []
-      const unpaidFines = unwrap(unpaidFinesRes) || []
+      const requests = unwrapOrEmpty(requestsRes)
+      const activeLoans = unwrapOrEmpty(activeLoansRes)
+      const unpaidFines = unwrapOrEmpty(unpaidFinesRes)
 
       let maxActiveLoans = 5
       if (profile && (profile.role === 'student' || profile.role === 'teacher')) {
@@ -143,7 +164,7 @@ export function memberLoanRequestsQueryOptions(memberId: string) {
         .eq('member_id', memberId)
         .order('requested_at', { ascending: false })
 
-      return unwrap(res) || []
+      return unwrapOrEmpty(res)
     },
     staleTime: 30_000,
   })
@@ -161,7 +182,7 @@ export function memberActiveLoansQueryOptions(memberId: string) {
         .eq('status', 'active')
         .order('due_date', { ascending: true })
 
-      return unwrap(res) || []
+      return unwrapOrEmpty(res)
     },
     staleTime: 30_000,
   })
@@ -201,8 +222,8 @@ export function memberLoanHistoryQueryOptions(
         .order('loaned_at', { ascending: false })
         .range(from, to)
 
-      const data = unwrap(res) || []
-      const count = res.count ?? 0
+      const data = unwrapOrEmpty(res)
+      const count = res.error ? 0 : (res.count ?? 0)
       const totalPages = Math.ceil(count / PAGE_SIZE)
 
       return {
@@ -251,8 +272,8 @@ export function librarianRequestsQueryOptions(filters: LibrarianRequestFilter) {
       const to = from + PAGE_SIZE - 1
 
       const res = await query.range(from, to)
-      const rows = unwrap(res) || []
-      const count = res.count ?? 0
+      const rows = unwrapOrEmpty(res)
+      const count = res.error ? 0 : (res.count ?? 0)
 
       // Ambil ringkasan pinjaman aktif, terlambat, dan denda belum lunas untuk anggota terkait
       const memberIds = Array.from(new Set(rows.map((r) => r.member_id)))
@@ -401,8 +422,8 @@ export function librarianLoansQueryOptions(filters: LibrarianLoanFilter) {
         .order('due_date', { ascending: true })
         .range(from, to)
 
-      const data = unwrap(res) || []
-      const count = res.count ?? 0
+      const data = unwrapOrEmpty(res)
+      const count = res.error ? 0 : (res.count ?? 0)
 
       return {
         data,
@@ -428,7 +449,7 @@ export function returnRequestedLoansQueryOptions() {
         .not('return_requested_at', 'is', null)
         .order('return_requested_at', { ascending: true })
 
-      return unwrap(res) || []
+      return unwrapOrEmpty(res)
     },
     staleTime: 30_000,
     refetchInterval: 30_000,

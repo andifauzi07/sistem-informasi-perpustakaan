@@ -1,9 +1,30 @@
 import { queryOptions } from '@tanstack/react-query'
-import { supabase, unwrap } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { fineKeys } from './keys'
 import type { LibrarianFineFilter } from '../schemas'
 
 const PAGE_SIZE = 20
+
+function isMissingTableError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+  const code = (error as { code?: string }).code
+  const msg = ((error as { message?: string }).message || '').toLowerCase()
+  return (
+    code === 'PGRST205' ||
+    code === 'PGRST202' ||
+    code === '42P01' ||
+    msg.includes('schema cache') ||
+    msg.includes('does not exist')
+  )
+}
+
+function unwrapOrEmpty<T>(res: { data: T[] | null; error: Error | null }): T[] {
+  if (res.error) {
+    if (isMissingTableError(res.error)) return []
+    throw res.error
+  }
+  return res.data || []
+}
 
 // Daftar Denda Anggota beserta Total Belum Lunas (FR-FIN-05, TC-FIN-04)
 export function memberFinesQueryOptions(memberId: string) {
@@ -31,7 +52,7 @@ export function memberFinesQueryOptions(memberId: string) {
         .eq('member_id', memberId)
         .order('created_at', { ascending: false })
 
-      const fines = unwrap(res) || []
+      const fines = unwrapOrEmpty(res)
       const unpaidTotal = fines
         .filter((f) => f.status === 'unpaid')
         .reduce((acc, f) => acc + f.amount, 0)
@@ -95,7 +116,7 @@ export function librarianFinesQueryOptions(filters: LibrarianFineFilter) {
       }
 
       const res = await query
-      const allRows = unwrap(res) || []
+      const allRows = unwrapOrEmpty(res)
 
       const q = filters.q.trim().toLowerCase()
       const cls = filters.className.trim().toLowerCase()
