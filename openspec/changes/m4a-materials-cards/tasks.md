@@ -1,8 +1,8 @@
 ## 1. Basis Data, Storage & Keamanan Bahan Ajar
 
-- [ ] 1.1 Buat migrasi SQL tabel `teaching_materials`, RPC `increment_material_downloads`, dan bucket storage privat `materials` lengkap dengan RLS dan limit 10 MB (FR-MAT-01, FR-MAT-03, BR-19)
-- [ ] 1.2 Tulis tes pgTAP untuk memastikan siswa tidak dapat melakukan insert bahan ajar dan hanya guru/pustakawan yang dapat mengelola berkas (TC-MAT-04)
-- [ ] 1.3 Jalankan `supabase db reset`, perbarui tipe TypeScript (`npm run db:types`), dan verifikasi dengan `npm run db:test`
+- [x] 1.1 Buat migrasi SQL tabel `teaching_materials`, RPC `increment_material_downloads`, dan bucket storage privat `materials` lengkap dengan RLS dan limit 10 MB (FR-MAT-01, FR-MAT-03, BR-19)
+- [x] 1.2 Tulis tes pgTAP untuk memastikan siswa tidak dapat melakukan insert bahan ajar dan hanya guru/pustakawan yang dapat mengelola berkas (TC-MAT-04)
+- [x] 1.3 Jalankan `supabase db reset`, perbarui tipe TypeScript (`npm run db:types`), dan verifikasi dengan `npm run db:test`
 
 ## 2. Lapisan API & Skema Zod Frontend
 
