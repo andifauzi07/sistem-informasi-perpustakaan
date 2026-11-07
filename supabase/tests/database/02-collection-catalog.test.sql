@@ -148,16 +148,11 @@ select results_eq(
 );
 
 -- 5.7 RPC delete_book & Proteksi Riwayat Transaksi (TC-COL-07)
--- Reset role ke superuser untuk membuat mock tabel loans sementara
+-- Reset role ke superuser untuk menyisipkan riwayat pengajuan pada buku 100
 reset role;
 
-create table public.loans (
-  id bigint generated always as identity primary key,
-  copy_id bigint references public.book_copies(id)
-);
-
-insert into public.loans (copy_id)
-values ((select id from public.book_copies where book_id = 100 limit 1));
+insert into public.loan_requests (member_id, book_id, status)
+values ('11111111-1111-1111-1111-111111111111', 100, 'cancelled');
 
 -- Kembali ke role pustakawan terotentikasi
 set local role authenticated;
@@ -170,9 +165,9 @@ select throws_ok(
   'TC-COL-07: Melempar BOOK_HAS_HISTORY bila buku memiliki riwayat peminjaman'
 );
 
--- Hapus mock loans dan verifikasi penghapusan buku berhasil
+-- Bersihkan riwayat uji dan verifikasi penghapusan buku berhasil
 reset role;
-drop table public.loans;
+delete from public.loan_requests where book_id = 100;
 
 set local role authenticated;
 set local "request.jwt.claims" to '{"sub": "33333333-3333-3333-3333-333333333333"}';

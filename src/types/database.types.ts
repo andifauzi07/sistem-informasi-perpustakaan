@@ -211,7 +211,7 @@ export type Database = {
           "loan_days": number
           "max_active_loans": number
           "pickup_days": number
-          "role": Database["public"]['Enums']["app_role"]
+          "role": Database["public"]["Enums"]["app_role"]
           "updated_at": string
           "updated_by": string | null
         }
@@ -221,7 +221,7 @@ export type Database = {
           "loan_days": number
           "max_active_loans": number
           "pickup_days": number
-          "role": Database["public"]['Enums']["app_role"]
+          "role": Database["public"]["Enums"]["app_role"]
           "updated_at"?: string
           "updated_by"?: string | null
         }
@@ -230,7 +230,7 @@ export type Database = {
           "loan_days"?: number
           "max_active_loans"?: number
           "pickup_days"?: number
-          "role"?: Database["public"]['Enums']["app_role"]
+          "role"?: Database["public"]["Enums"]["app_role"]
           "updated_at"?: string
           "updated_by"?: string | null
         }
@@ -238,6 +238,278 @@ export type Database = {
           {
             foreignKeyName: "loan_policies_updated_by_fkey"
             columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "loan_requests": {
+        Row: {
+          "book_id": number
+          "closed_at": string | null
+          "created_at": string
+          "decided_at": string | null
+          "decided_by": string | null
+          "id": number
+          "member_id": string
+          "notes": string | null
+          "pickup_deadline": string | null
+          "reject_reason": string | null
+          "requested_at": string
+          "reserved_copy_id": number | null
+          "status": Database["public"]["Enums"]["loan_request_status"]
+          "updated_at": string
+        }
+        ComputedFields: never
+        Insert: {
+          "book_id": number
+          "closed_at"?: string | null
+          "created_at"?: string
+          "decided_at"?: string | null
+          "decided_by"?: string | null
+          "id"?: never
+          "member_id": string
+          "notes"?: string | null
+          "pickup_deadline"?: string | null
+          "reject_reason"?: string | null
+          "requested_at"?: string
+          "reserved_copy_id"?: number | null
+          "status"?: Database["public"]["Enums"]["loan_request_status"]
+          "updated_at"?: string
+        }
+        Update: {
+          "book_id"?: number
+          "closed_at"?: string | null
+          "created_at"?: string
+          "decided_at"?: string | null
+          "decided_by"?: string | null
+          "id"?: never
+          "member_id"?: string
+          "notes"?: string | null
+          "pickup_deadline"?: string | null
+          "reject_reason"?: string | null
+          "requested_at"?: string
+          "reserved_copy_id"?: number | null
+          "status"?: Database["public"]["Enums"]["loan_request_status"]
+          "updated_at"?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_requests_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_requests_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_requests_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_requests_reserved_copy_id_fkey"
+            columns: ["reserved_copy_id"]
+            isOneToOne: false
+            referencedRelation: "book_copies"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "loans": {
+        Row: {
+          "checked_in_by": string | null
+          "checked_out_by": string
+          "copy_id": number
+          "created_at": string
+          "daily_fine_snapshot": number
+          "due_date": string
+          "id": number
+          "loaned_at": string
+          "lost_at": string | null
+          "member_id": string
+          "notes": string | null
+          "request_id": number | null
+          "return_condition": string | null
+          "return_requested_at": string | null
+          "returned_at": string | null
+          "status": Database["public"]["Enums"]["loan_status"]
+          "updated_at": string
+        }
+        ComputedFields: never
+        Insert: {
+          "checked_in_by"?: string | null
+          "checked_out_by": string
+          "copy_id": number
+          "created_at"?: string
+          "daily_fine_snapshot": number
+          "due_date": string
+          "id"?: never
+          "loaned_at"?: string
+          "lost_at"?: string | null
+          "member_id": string
+          "notes"?: string | null
+          "request_id"?: number | null
+          "return_condition"?: string | null
+          "return_requested_at"?: string | null
+          "returned_at"?: string | null
+          "status"?: Database["public"]["Enums"]["loan_status"]
+          "updated_at"?: string
+        }
+        Update: {
+          "checked_in_by"?: string | null
+          "checked_out_by"?: string
+          "copy_id"?: number
+          "created_at"?: string
+          "daily_fine_snapshot"?: number
+          "due_date"?: string
+          "id"?: never
+          "loaned_at"?: string
+          "lost_at"?: string | null
+          "member_id"?: string
+          "notes"?: string | null
+          "request_id"?: number | null
+          "return_condition"?: string | null
+          "return_requested_at"?: string | null
+          "returned_at"?: string | null
+          "status"?: Database["public"]["Enums"]["loan_status"]
+          "updated_at"?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loans_checked_in_by_fkey"
+            columns: ["checked_in_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_checked_out_by_fkey"
+            columns: ["checked_out_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_copy_id_fkey"
+            columns: ["copy_id"]
+            isOneToOne: false
+            referencedRelation: "book_copies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: true
+            referencedRelation: "loan_requests"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      "fines": {
+        Row: {
+          "amount": number
+          "created_at": string
+          "created_by": string | null
+          "days_late": number | null
+          "id": number
+          "loan_id": number
+          "member_id": string
+          "notes": string | null
+          "paid_at": string | null
+          "received_by": string | null
+          "status": Database["public"]["Enums"]["fine_status"]
+          "type": Database["public"]["Enums"]["fine_type"]
+          "updated_at": string
+          "waived_at": string | null
+          "waived_by": string | null
+          "waived_reason": string | null
+        }
+        ComputedFields: never
+        Insert: {
+          "amount": number
+          "created_at"?: string
+          "created_by"?: string | null
+          "days_late"?: number | null
+          "id"?: never
+          "loan_id": number
+          "member_id": string
+          "notes"?: string | null
+          "paid_at"?: string | null
+          "received_by"?: string | null
+          "status"?: Database["public"]["Enums"]["fine_status"]
+          "type": Database["public"]["Enums"]["fine_type"]
+          "updated_at"?: string
+          "waived_at"?: string | null
+          "waived_by"?: string | null
+          "waived_reason"?: string | null
+        }
+        Update: {
+          "amount"?: number
+          "created_at"?: string
+          "created_by"?: string | null
+          "days_late"?: number | null
+          "id"?: never
+          "loan_id"?: number
+          "member_id"?: string
+          "notes"?: string | null
+          "paid_at"?: string | null
+          "received_by"?: string | null
+          "status"?: Database["public"]["Enums"]["fine_status"]
+          "type"?: Database["public"]["Enums"]["fine_type"]
+          "updated_at"?: string
+          "waived_at"?: string | null
+          "waived_by"?: string | null
+          "waived_reason"?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fines_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fines_loan_id_fkey"
+            columns: ["loan_id"]
+            isOneToOne: false
+            referencedRelation: "loans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fines_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fines_received_by_fkey"
+            columns: ["received_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fines_waived_by_fkey"
+            columns: ["waived_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -286,7 +558,7 @@ export type Database = {
           "phone": string | null
           "photo_path": string | null
           "position": string | null
-          "role": Database["public"]['Enums']["app_role"]
+          "role": Database["public"]["Enums"]["app_role"]
           "subject": string | null
           "updated_at": string
         }
@@ -304,7 +576,7 @@ export type Database = {
           "phone"?: string | null
           "photo_path"?: string | null
           "position"?: string | null
-          "role": Database["public"]['Enums']["app_role"]
+          "role": Database["public"]["Enums"]["app_role"]
           "subject"?: string | null
           "updated_at"?: string
         }
@@ -321,7 +593,7 @@ export type Database = {
           "phone"?: string | null
           "photo_path"?: string | null
           "position"?: string | null
-          "role"?: Database["public"]['Enums']["app_role"]
+          "role"?: Database["public"]["Enums"]["app_role"]
           "subject"?: string | null
           "updated_at"?: string
         }
@@ -355,6 +627,40 @@ export type Database = {
           }
         ]
       }
+      "v_loans": {
+        Row: {
+          "authors": string | null
+          "book_id": number | null
+          "checked_in_by": string | null
+          "checked_out_by": string | null
+          "class_name": string | null
+          "copy_code": string | null
+          "copy_id": number | null
+          "cover_path": string | null
+          "created_at": string | null
+          "daily_fine_snapshot": number | null
+          "days_overdue": number | null
+          "due_date": string | null
+          "estimated_fine": number | null
+          "full_name": string | null
+          "id": number | null
+          "is_overdue": boolean | null
+          "loaned_at": string | null
+          "lost_at": string | null
+          "member_code": string | null
+          "member_id": string | null
+          "notes": string | null
+          "request_id": number | null
+          "return_condition": string | null
+          "return_requested_at": string | null
+          "returned_at": string | null
+          "role": Database["public"]["Enums"]["app_role"] | null
+          "status": Database["public"]["Enums"]["loan_status"] | null
+          "title": string | null
+          "updated_at": string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       "add_book_copies": {
@@ -368,6 +674,51 @@ export type Database = {
         }
         Returns: Database["public"]["Tables"]["book_copies"]["Row"][]
       }
+      "approve_loan_request": {
+        Args: {
+          "p_copy_id"?: number | null
+          "p_request_id": number
+        }
+        Returns: Database["public"]["Tables"]["loan_requests"]["Row"]
+      }
+      "cancel_loan_request": {
+        Args: {
+          "p_request_id": number
+        }
+        Returns: Database["public"]["Tables"]["loan_requests"]["Row"]
+      }
+      "checkin_copy": {
+        Args: {
+          "p_condition"?: string
+          "p_copy_code": string
+          "p_damage_fine"?: number | null
+          "p_notes"?: string | null
+        }
+        Returns: Json
+      }
+      "checkin_loan": {
+        Args: {
+          "p_condition"?: string
+          "p_copy_code": string
+          "p_damage_fine"?: number | null
+          "p_notes"?: string | null
+        }
+        Returns: Json
+      }
+      "checkout_copy": {
+        Args: {
+          "p_copy_code": string
+          "p_member_id": string
+        }
+        Returns: Database["public"]["Tables"]["loans"]["Row"]
+      }
+      "checkout_loan": {
+        Args: {
+          "p_copy_code": string
+          "p_member_id": string
+        }
+        Returns: Database["public"]["Tables"]["loans"]["Row"]
+      }
       "complete_password_change": {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -377,6 +728,51 @@ export type Database = {
           "p_book_id": number
         }
         Returns: undefined
+      }
+      "lookup_copy": {
+        Args: {
+          "p_code": string
+        }
+        Returns: Json
+      }
+      "lookup_member": {
+        Args: {
+          "p_code": string
+        }
+        Returns: Json
+      }
+      "mark_loan_lost": {
+        Args: {
+          "p_amount"?: number | null
+          "p_loan_id": number
+          "p_notes"?: string | null
+        }
+        Returns: Database["public"]["Tables"]["loans"]["Row"]
+      }
+      "pay_fine": {
+        Args: {
+          "p_fine_id": number
+        }
+        Returns: Database["public"]["Tables"]["fines"]["Row"]
+      }
+      "reject_loan_request": {
+        Args: {
+          "p_reason": string
+          "p_request_id": number
+        }
+        Returns: Database["public"]["Tables"]["loan_requests"]["Row"]
+      }
+      "request_loan": {
+        Args: {
+          "p_book_id": number
+        }
+        Returns: Database["public"]["Tables"]["loan_requests"]["Row"]
+      }
+      "request_return": {
+        Args: {
+          "p_loan_id": number
+        }
+        Returns: Database["public"]["Tables"]["loans"]["Row"]
       }
       "search_catalog": {
         Args: {
@@ -417,11 +813,22 @@ export type Database = {
         }
         Returns: Database["public"]["Tables"]["book_copies"]["Row"]
       }
+      "waive_fine": {
+        Args: {
+          "p_fine_id": number
+          "p_reason": string
+        }
+        Returns: Database["public"]["Tables"]["fines"]["Row"]
+      }
     }
     Enums: {
       "app_role": "student" | "teacher" | "librarian"
       "copy_source": "purchase" | "donation" | "government" | "other"
       "copy_status": "available" | "reserved" | "on_loan" | "damaged" | "lost" | "withdrawn"
+      "fine_status": "unpaid" | "paid" | "waived"
+      "fine_type": "late" | "damage" | "loss"
+      "loan_request_status": "pending" | "approved" | "rejected" | "cancelled" | "expired" | "fulfilled"
+      "loan_status": "active" | "returned" | "lost"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -550,7 +957,11 @@ export const Constants = {
     Enums: {
       "app_role": ["student", "teacher", "librarian"],
       "copy_source": ["purchase", "donation", "government", "other"],
-      "copy_status": ["available", "reserved", "on_loan", "damaged", "lost", "withdrawn"]
+      "copy_status": ["available", "reserved", "on_loan", "damaged", "lost", "withdrawn"],
+      "fine_status": ["unpaid", "paid", "waived"],
+      "fine_type": ["late", "damage", "loss"],
+      "loan_request_status": ["pending", "approved", "rejected", "cancelled", "expired", "fulfilled"],
+      "loan_status": ["active", "returned", "lost"]
     }
   }
 } as const
