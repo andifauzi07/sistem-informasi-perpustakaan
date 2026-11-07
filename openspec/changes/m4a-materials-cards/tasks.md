@@ -6,9 +6,9 @@
 
 ## 2. Lapisan API & Skema Zod Frontend
 
-- [ ] 2.1 Buat skema validasi Zod untuk metadata dan upload bahan ajar di `src/features/materials/schemas.ts`
-- [ ] 2.2 Buat query key factory, queryOptions, dan mutations bahan ajar di `src/features/materials/api/` (termasuk generator signed URL)
-- [ ] 2.3 Buat komponen generator kartu PDF dan QR Code di `src/features/cards/components/` dengan lazy loading `bwip-js` dan `@react-pdf/renderer`
+- [x] 2.1 Buat skema validasi Zod untuk metadata dan upload bahan ajar di `src/features/materials/schemas.ts`
+- [x] 2.2 Buat query key factory, queryOptions, dan mutations bahan ajar di `src/features/materials/api/` (termasuk generator signed URL)
+- [x] 2.3 Buat komponen generator kartu PDF dan QR Code di `src/features/cards/components/` dengan lazy loading `bwip-js` dan `@react-pdf/renderer`
 
 ## 3. Antarmuka Bahan Ajar Siswa & Guru
 

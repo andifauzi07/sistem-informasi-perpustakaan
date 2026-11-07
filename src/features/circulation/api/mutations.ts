@@ -85,7 +85,7 @@ export function useApproveLoanRequestMutation() {
     mutationFn: async (data: ApproveRequestFormData) => {
       const res = await supabase.rpc('approve_loan_request', {
         p_request_id: data.requestId,
-        p_copy_id: data.copyId ?? null,
+        p_copy_id: data.copyId ?? undefined,
       })
       return unwrap(res)
     },
@@ -137,8 +137,8 @@ export function useCheckinCopyMutation() {
       const res = await supabase.rpc('checkin_copy', {
         p_copy_code: data.copyCode.trim(),
         p_condition: data.condition,
-        p_damage_fine: data.condition === 'damaged' ? data.damageFine ?? null : null,
-        p_notes: data.notes?.trim() || null,
+        p_damage_fine: data.condition === 'damaged' ? data.damageFine ?? undefined : undefined,
+        p_notes: data.notes?.trim() || undefined,
       })
       return unwrap(res) as unknown as CheckinResultSummary
     },
@@ -156,7 +156,7 @@ export function useMarkLoanLostMutation() {
       const res = await supabase.rpc('mark_loan_lost', {
         p_loan_id: data.loanId,
         p_amount: data.amount,
-        p_notes: data.notes?.trim() || null,
+        p_notes: data.notes?.trim() || undefined,
       })
       return unwrap(res)
     },

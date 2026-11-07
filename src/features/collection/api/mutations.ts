@@ -155,10 +155,10 @@ export function useAddCopiesMutation() {
       const res = await supabase.rpc('add_book_copies', {
         p_book_id: data.bookId,
         p_quantity: data.mode === 'auto' ? data.quantity ?? 1 : manualCodes?.length || 1,
-        p_codes: manualCodes,
-        p_source: data.source || null,
-        p_acquired_at: data.acquiredAt || null,
-        p_price: data.price ?? null,
+        p_codes: manualCodes || undefined,
+        p_source: data.source || undefined,
+        p_acquired_at: data.acquiredAt || undefined,
+        p_price: data.price ?? undefined,
       })
       return unwrap(res)
     },
@@ -178,7 +178,7 @@ export function useSetCopyStatusMutation() {
       const res = await supabase.rpc('set_copy_status', {
         p_copy_id: data.copyId,
         p_status: data.status,
-        p_notes: data.notes || null,
+        p_notes: data.notes || undefined,
       })
       return unwrap(res)
     },
