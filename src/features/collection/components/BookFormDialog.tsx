@@ -73,7 +73,7 @@ export function BookFormDialog({
       publisher: '',
       publicationYear: undefined,
       isbn: '',
-      categoryId: categories[0]?.id || 1,
+      categoryId: categories[0]?.id ?? 0,
       synopsis: '',
       language: 'Indonesia',
       pages: undefined,
@@ -82,6 +82,8 @@ export function BookFormDialog({
       coverPath: null,
     },
   })
+
+  const hasCategories = categories.length > 0
 
   const selectedCategoryId = watch('categoryId')
 
@@ -119,7 +121,7 @@ export function BookFormDialog({
           publisher: '',
           publicationYear: undefined,
           isbn: '',
-          categoryId: categories[0]?.id || 1,
+          categoryId: categories[0]?.id ?? 0,
           synopsis: '',
           language: 'Indonesia',
           pages: undefined,
@@ -251,23 +253,35 @@ export function BookFormDialog({
               <Label htmlFor="book-category">
                 Kategori <span className="text-destructive">*</span>
               </Label>
-              <Select
-                value={String(selectedCategoryId || categories[0]?.id || '')}
-                onValueChange={(val) => setValue('categoryId', Number(val))}
-                disabled={isPending}
-              >
-                <SelectTrigger id="book-category" className="mt-1">
-                  <SelectValue placeholder="Pilih Kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={String(cat.id)}>
-                      {cat.name} {cat.ddc_code ? `(${cat.ddc_code})` : ''}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.categoryId && (
+              {hasCategories ? (
+                <Select
+                  value={selectedCategoryId ? String(selectedCategoryId) : undefined}
+                  onValueChange={(val) =>
+                    setValue('categoryId', Number(val), { shouldValidate: true })
+                  }
+                  disabled={isPending}
+                >
+                  <SelectTrigger id="book-category" className="mt-1 w-full">
+                    <SelectValue placeholder="Pilih Kategori" />
+                  </SelectTrigger>
+                  <SelectContent position="popper" className="max-h-64">
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={String(cat.id)}>
+                        {cat.name} {cat.ddc_code ? `(${cat.ddc_code})` : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="mt-1 rounded-md border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs text-amber-800 dark:text-amber-300">
+                  Belum ada kategori buku. Tambahkan minimal satu kategori terlebih dahulu di menu{' '}
+                  <a href="/pustakawan/kategori" className="font-semibold underline">
+                    Kategori
+                  </a>
+                  .
+                </div>
+              )}
+              {errors.categoryId && hasCategories && (
                 <p className="mt-1 text-xs text-destructive">{errors.categoryId.message}</p>
               )}
             </div>
@@ -443,7 +457,7 @@ export function BookFormDialog({
             >
               Batal
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending || !hasCategories}>
               {isPending ? 'Menyimpan...' : isEditing ? 'Simpan Perubahan' : 'Tambah Buku'}
             </Button>
           </DialogFooter>
