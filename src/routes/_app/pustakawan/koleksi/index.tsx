@@ -204,9 +204,7 @@ function KoleksiPustakawanPage() {
               </TableRow>
             ) : (
               booksResult.data.map((book) => {
-                const availability = Array.isArray(book.v_book_availability)
-                  ? book.v_book_availability[0]
-                  : book.v_book_availability
+                const availability = book.v_book_availability
                 const totalCopies = availability?.total_copies ?? 0
                 const availableCopies = availability?.available_copies ?? 0
                 const coverUrl = book.cover_path

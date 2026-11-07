@@ -232,7 +232,6 @@ export function librarianRequestsQueryOptions(filters: LibrarianRequestFilter) {
             title,
             authors,
             call_number,
-            v_book_availability (available_copies, total_copies),
             book_copies (id, code, status)
           ),
           reserved_copy:book_copies!loan_requests_reserved_copy_id_fkey (id, code)
@@ -257,11 +256,32 @@ export function librarianRequestsQueryOptions(filters: LibrarianRequestFilter) {
 
       // Ambil ringkasan pinjaman aktif, terlambat, dan denda belum lunas untuk anggota terkait
       const memberIds = Array.from(new Set(rows.map((r) => r.member_id)))
+      const bookIds = Array.from(new Set(rows.map((r) => r.book_id)))
 
       const memberStats: Record<
         string,
         { activeLoans: number; overdueLoans: number; unpaidFines: number }
       > = {}
+
+      const availMap = new Map<
+        number,
+        { available_copies: number; total_copies: number }
+      >()
+
+      if (bookIds.length > 0) {
+        const availRes = await supabase
+          .from('v_book_availability')
+          .select('book_id, available_copies, total_copies')
+          .in('book_id', bookIds)
+        for (const v of availRes.data || []) {
+          if (v.book_id !== null) {
+            availMap.set(v.book_id, {
+              available_copies: v.available_copies ?? 0,
+              total_copies: v.total_copies ?? 0,
+            })
+          }
+        }
+      }
 
       if (memberIds.length > 0) {
         const [loansRes, finesRes] = await Promise.all([
@@ -314,6 +334,15 @@ export function librarianRequestsQueryOptions(filters: LibrarianRequestFilter) {
       return {
         data: filteredRows.map((r) => ({
           ...r,
+          book: r.book
+            ? {
+                ...r.book,
+                v_book_availability: availMap.get(r.book_id) ?? {
+                  available_copies: 0,
+                  total_copies: 0,
+                },
+              }
+            : null,
           memberSummary: memberStats[r.member_id] || {
             activeLoans: 0,
             overdueLoans: 0,

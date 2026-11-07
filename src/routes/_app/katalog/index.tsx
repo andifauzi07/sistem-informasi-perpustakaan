@@ -1,7 +1,14 @@
 import { useState, useTransition, useEffect } from 'react'
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Search, BookOpen, ChevronLeft, ChevronRight, CheckCircle2, XCircle, ImageIcon } from 'lucide-react'
+import {
+  Search,
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  XCircle,
+} from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -108,36 +115,44 @@ function KatalogPage() {
   }
 
   return (
-    <div className="container mx-auto space-y-6 p-4 md:p-6">
+    <div className="container mx-auto max-w-6xl space-y-6 p-4 md:p-6">
       {/* Header Katalog */}
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Katalog Perpustakaan</h1>
-        <p className="text-sm text-muted-foreground">
-          Telusuri koleksi buku SMKN 1 Selayar dengan informasi ketersediaan eksemplar fisik real-time.
-        </p>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Katalog Perpustakaan
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Telusuri koleksi buku SMKN 1 Selayar dengan informasi ketersediaan eksemplar fisik
+            real-time.
+          </p>
+        </div>
+        <Badge variant="secondary" className="w-fit text-xs">
+          Total {searchResult.count} Judul Ditemukan
+        </Badge>
       </div>
 
       {/* Kontrol Pencarian & Filter */}
-      <Card>
+      <Card className="border-border/80 shadow-xs">
         <CardContent className="space-y-3 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
                 placeholder="Cari judul buku, penulis, atau ISBN..."
                 value={queryInput}
                 onChange={(e) => setQueryInput(e.target.value)}
-                className="pl-9"
+                className="pl-9 h-10"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="w-full sm:w-48">
+              <div className="w-full sm:w-52">
                 <Select
                   value={search.category ? String(search.category) : 'all'}
                   onValueChange={handleCategoryChange}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full h-10">
                     <SelectValue placeholder="Semua Kategori" />
                   </SelectTrigger>
                   <SelectContent>
@@ -151,9 +166,9 @@ function KatalogPage() {
                 </Select>
               </div>
 
-              <div className="w-full sm:w-40">
+              <div className="w-full sm:w-44">
                 <Select value={search.sort} onValueChange={handleSortChange}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full h-10">
                     <SelectValue placeholder="Urutkan" />
                   </SelectTrigger>
                   <SelectContent>
@@ -166,7 +181,7 @@ function KatalogPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center justify-between pt-1">
             <label className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -182,7 +197,7 @@ function KatalogPage() {
 
       {/* Hasil Pencarian Buku (Paginasi 20 Kartu - FR-CAT-03) */}
       {searchResult.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-card py-16 text-center">
           <BookOpen className="size-12 text-muted-foreground/40 mb-3" />
           <h3 className="text-lg font-semibold">Buku tidak ditemukan</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
@@ -190,7 +205,7 @@ function KatalogPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {searchResult.data.map((book) => {
             const isAvailable = book.available_copies > 0
             const coverUrl = book.cover_path
@@ -202,7 +217,7 @@ function KatalogPage() {
                 key={book.id}
                 to="/katalog/$bookId"
                 params={{ bookId: String(book.id) }}
-                className="group flex flex-col overflow-hidden rounded-lg border bg-card transition hover:border-primary/50 hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
               >
                 {/* Sampul Buku */}
                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted flex items-center justify-center">
@@ -216,21 +231,36 @@ function KatalogPage() {
                       className="size-full object-cover transition group-hover:scale-105 duration-300"
                     />
                   ) : (
-                    <div className="flex flex-col items-center justify-center gap-1 text-muted-foreground">
-                      <ImageIcon className="size-10 text-muted-foreground/40" />
-                      <span className="text-xs">Tanpa Sampul</span>
+                    /* Typographic Book Cover untuk buku tanpa gambar sampul */
+                    <div className="flex size-full flex-col justify-between bg-gradient-to-br from-slate-800 via-slate-900 to-blue-950 p-5 pt-11 text-white relative">
+                      <div className="absolute inset-y-0 left-0 w-3 bg-white/10 border-r border-white/10" />
+                      <div className="pl-2 space-y-2 my-auto">
+                        <span className="inline-block rounded bg-white/15 px-2 py-0.5 text-[10px] font-medium text-blue-200">
+                          {book.category_name}
+                        </span>
+                        <p className="font-bold text-base leading-snug line-clamp-3 text-white">
+                          {book.title}
+                        </p>
+                        <p className="text-xs text-slate-300 line-clamp-2">
+                          {book.authors}
+                        </p>
+                      </div>
+                      <div className="pl-2 flex items-center justify-between text-[10px] text-slate-400 border-t border-white/10 pt-2">
+                        <span className="font-mono">{book.call_number || 'SMKN 1 Selayar'}</span>
+                        <span>{book.publication_year || ''}</span>
+                      </div>
                     </div>
                   )}
 
                   {/* Badge Status Ketersediaan */}
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-2.5 right-2.5">
                     {isAvailable ? (
-                      <Badge className="bg-emerald-600/90 hover:bg-emerald-600 text-white gap-1 text-[11px] shadow">
+                      <Badge className="bg-emerald-600/95 hover:bg-emerald-600 text-white gap-1 text-[11px] shadow-sm">
                         <CheckCircle2 className="size-3" />
                         <span>Tersedia ({book.available_copies})</span>
                       </Badge>
                     ) : (
-                      <Badge variant="destructive" className="gap-1 text-[11px] shadow">
+                      <Badge variant="destructive" className="gap-1 text-[11px] shadow-sm">
                         <XCircle className="size-3" />
                         <span>Habis (0)</span>
                       </Badge>
@@ -240,7 +270,7 @@ function KatalogPage() {
 
                 {/* Informasi Buku */}
                 <div className="flex flex-1 flex-col p-4">
-                  <span className="text-xs font-semibold text-primary">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-primary">
                     {book.category_name}
                   </span>
                   <h3 className="mt-1 font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition">
@@ -253,7 +283,7 @@ function KatalogPage() {
                   <div className="mt-auto pt-3 border-t flex items-center justify-between text-xs text-muted-foreground">
                     <span>{book.total_copies} eksemplar</span>
                     {book.call_number && (
-                      <span className="font-mono text-[11px] truncate max-w-[120px]">
+                      <span className="font-mono text-[11px] rounded bg-muted px-1.5 py-0.5 text-foreground truncate max-w-[130px]">
                         {book.call_number}
                       </span>
                     )}

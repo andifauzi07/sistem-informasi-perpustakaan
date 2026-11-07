@@ -27,11 +27,13 @@ export function booksListQueryOptions(filters: CollectionFilter) {
     queryFn: async () => {
       let query = supabase
         .from('books')
-        .select('*, categories(id, name), v_book_availability(*)', { count: 'exact' })
+        .select('*, categories(id, name)', { count: 'exact' })
 
       if (filters.q.trim()) {
         const keyword = filters.q.trim()
-        query = query.or(`title.ilike.%${keyword}%,authors.ilike.%${keyword}%,isbn.ilike.%${keyword}%`)
+        query = query.or(
+          `title.ilike.%${keyword}%,authors.ilike.%${keyword}%,isbn.ilike.%${keyword}%`
+        )
       }
 
       if (filters.categoryId) {
@@ -45,12 +47,47 @@ export function booksListQueryOptions(filters: CollectionFilter) {
       query = query.order('created_at', { ascending: false }).range(from, to)
 
       const res = await query
-      const data = unwrap(res)
+      const rows = unwrap(res) || []
       const count = res.count ?? 0
       const totalPages = Math.ceil(count / PAGE_SIZE)
 
+      const bookIds = rows.map((b) => b.id)
+      const availabilityMap = new Map<
+        number,
+        {
+          book_id: number | null
+          total_copies: number | null
+          available_copies: number | null
+          on_loan_copies: number | null
+          reserved_copies: number | null
+        }
+      >()
+
+      if (bookIds.length > 0) {
+        const availRes = await supabase
+          .from('v_book_availability')
+          .select('*')
+          .in('book_id', bookIds)
+        for (const v of availRes.data || []) {
+          if (v.book_id !== null) {
+            availabilityMap.set(v.book_id, v)
+          }
+        }
+      }
+
+      const data = rows.map((b) => ({
+        ...b,
+        v_book_availability: availabilityMap.get(b.id) ?? {
+          book_id: b.id,
+          total_copies: 0,
+          available_copies: 0,
+          on_loan_copies: 0,
+          reserved_copies: 0,
+        },
+      }))
+
       return {
-        data: data || [],
+        data,
         count,
         page,
         totalPages,
@@ -65,12 +102,29 @@ export function bookDetailQueryOptions(id: number) {
   return queryOptions({
     queryKey: collectionKeys.bookDetail(id),
     queryFn: async () => {
-      const res = await supabase
-        .from('books')
-        .select('*, categories(*), v_book_availability(*)')
-        .eq('id', id)
-        .single()
-      return unwrap(res)
+      const [bookRes, availRes] = await Promise.all([
+        supabase
+          .from('books')
+          .select('*, categories(*)')
+          .eq('id', id)
+          .single(),
+        supabase
+          .from('v_book_availability')
+          .select('*')
+          .eq('book_id', id)
+          .maybeSingle(),
+      ])
+      const book = unwrap(bookRes)
+      return {
+        ...book,
+        v_book_availability: availRes.data ?? {
+          book_id: id,
+          total_copies: 0,
+          available_copies: 0,
+          on_loan_copies: 0,
+          reserved_copies: 0,
+        },
+      }
     },
     staleTime: 30_000,
   })

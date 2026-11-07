@@ -15,7 +15,6 @@ import {
   BookmarkCheck,
   AlertCircle,
   AlertTriangle,
-  ImageIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -76,9 +75,7 @@ function DetailBukuPage() {
     )
   }
 
-  const availability = Array.isArray(book.v_book_availability)
-    ? book.v_book_availability[0]
-    : book.v_book_availability
+  const availability = book.v_book_availability
 
   const totalCopies = availability?.total_copies ?? 0
   const availableCopies = availability?.available_copies ?? 0
@@ -148,9 +145,23 @@ function DetailBukuPage() {
                 className="size-full object-cover"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                <ImageIcon className="size-16 text-muted-foreground/30" />
-                <span className="text-sm">Tidak ada sampul</span>
+              <div className="flex size-full flex-col justify-between bg-gradient-to-br from-slate-800 via-slate-900 to-blue-950 p-6 text-white relative">
+                <div className="absolute inset-y-0 left-0 w-4 bg-white/10 border-r border-white/10" />
+                <div className="pl-3">
+                  <span className="inline-block rounded bg-white/15 px-2.5 py-1 text-xs font-medium text-blue-200">
+                    {book.categories?.name || 'Koleksi Umum'}
+                  </span>
+                </div>
+                <div className="pl-3 space-y-2 my-auto">
+                  <p className="font-bold text-xl leading-snug text-white">
+                    {book.title}
+                  </p>
+                  <p className="text-sm text-slate-300">{book.authors}</p>
+                </div>
+                <div className="pl-3 flex items-center justify-between text-xs text-slate-400 border-t border-white/10 pt-3">
+                  <span className="font-mono">{book.call_number || 'SMKN 1 Selayar'}</span>
+                  <span>{book.publication_year || ''}</span>
+                </div>
               </div>
             )}
           </div>

@@ -42,12 +42,30 @@ export function catalogDetailQueryOptions(bookId: number) {
   return queryOptions({
     queryKey: catalogKeys.detail(bookId),
     queryFn: async () => {
-      const res = await supabase
-        .from('books')
-        .select('*, categories(*), v_book_availability(*), book_copies(*)')
-        .eq('id', bookId)
-        .single()
-      return unwrap(res)
+      const [bookRes, availRes] = await Promise.all([
+        supabase
+          .from('books')
+          .select('*, categories(*), book_copies(*)')
+          .eq('id', bookId)
+          .single(),
+        supabase
+          .from('v_book_availability')
+          .select('*')
+          .eq('book_id', bookId)
+          .maybeSingle(),
+      ])
+
+      const book = unwrap(bookRes)
+      return {
+        ...book,
+        v_book_availability: availRes.data ?? {
+          book_id: bookId,
+          total_copies: 0,
+          available_copies: 0,
+          on_loan_copies: 0,
+          reserved_copies: 0,
+        },
+      }
     },
     staleTime: 30_000,
   })
