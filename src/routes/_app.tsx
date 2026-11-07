@@ -4,7 +4,20 @@ import { useLogoutMutation } from '@/features/auth/api/mutations'
 import { ROLE_LABELS } from '@/lib/labels'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { BookOpen, User, LogOut, Users, Home, Library, Tag } from 'lucide-react'
+import {
+  BookOpen,
+  User,
+  LogOut,
+  Users,
+  Home,
+  Library,
+  Tag,
+  ScanBarcode,
+  ClipboardCheck,
+  Receipt,
+  History,
+  BookmarkCheck,
+} from 'lucide-react'
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
@@ -47,18 +60,18 @@ function AppLayout() {
       {/* Navbar Atas */}
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <Link to="/beranda" className="flex items-center gap-2 font-bold text-primary">
+          <div className="flex items-center gap-4 overflow-x-auto">
+            <Link to="/beranda" className="flex items-center gap-2 font-bold text-primary shrink-0">
               <BookOpen className="size-6" />
               <span className="hidden sm:inline">SIP SMKN 1 Selayar</span>
             </Link>
 
             {!profile.must_change_password && (
-              <nav className="flex items-center gap-2 text-sm font-medium">
+              <nav className="flex items-center gap-1 text-sm font-medium">
                 <Link
                   to="/beranda"
                   activeProps={{ className: 'text-primary font-semibold' }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
                 >
                   <Home className="size-4" />
                   <span>Beranda</span>
@@ -68,19 +81,104 @@ function AppLayout() {
                   to="/katalog"
                   search={{ q: '', category: undefined, availableOnly: false, sort: 'relevance', page: 1 }}
                   activeProps={{ className: 'text-primary font-semibold' }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
                 >
                   <BookOpen className="size-4" />
                   <span>Katalog</span>
                 </Link>
 
+                {!isLibrarian && (
+                  <>
+                    <Link
+                      to="/pinjaman"
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <BookmarkCheck className="size-4" />
+                      <span>Pinjaman Saya</span>
+                    </Link>
+
+                    <Link
+                      to="/riwayat"
+                      search={{ status: 'all', page: 1 }}
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <History className="size-4" />
+                      <span>Riwayat</span>
+                    </Link>
+
+                    <Link
+                      to="/denda"
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <Receipt className="size-4" />
+                      <span>Denda Saya</span>
+                    </Link>
+                  </>
+                )}
+
                 {isLibrarian && (
                   <>
+                    <Link
+                      to="/pustakawan/sirkulasi"
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <ScanBarcode className="size-4" />
+                      <span>Sirkulasi</span>
+                    </Link>
+
+                    <Link
+                      to="/pustakawan/pengajuan"
+                      search={{ q: '', status: 'pending', page: 1 }}
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <ClipboardCheck className="size-4" />
+                      <span>Pengajuan</span>
+                    </Link>
+
+                    <Link
+                      to="/pustakawan/pinjaman"
+                      search={{
+                        q: '',
+                        overdueOnly: false,
+                        returnRequestedOnly: false,
+                        role: 'all',
+                        className: '',
+                        status: 'active',
+                        page: 1,
+                      }}
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <BookmarkCheck className="size-4" />
+                      <span>Pinjaman</span>
+                    </Link>
+
+                    <Link
+                      to="/pustakawan/denda"
+                      search={{
+                        q: '',
+                        status: 'all',
+                        type: 'all',
+                        className: '',
+                        page: 1,
+                      }}
+                      activeProps={{ className: 'text-primary font-semibold' }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
+                    >
+                      <Receipt className="size-4" />
+                      <span>Denda</span>
+                    </Link>
+
                     <Link
                       to="/pustakawan/koleksi"
                       search={{ q: '', categoryId: undefined, page: 1 }}
                       activeProps={{ className: 'text-primary font-semibold' }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
                     >
                       <Library className="size-4" />
                       <span>Koleksi</span>
@@ -89,7 +187,7 @@ function AppLayout() {
                     <Link
                       to="/pustakawan/kategori"
                       activeProps={{ className: 'text-primary font-semibold' }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
                     >
                       <Tag className="size-4" />
                       <span>Kategori</span>
@@ -99,7 +197,7 @@ function AppLayout() {
                       to="/pustakawan/anggota"
                       search={{ q: '', role: 'all', status: 'all', page: 1 }}
                       activeProps={{ className: 'text-primary font-semibold' }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground transition hover:text-foreground"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-muted-foreground transition hover:text-foreground shrink-0"
                     >
                       <Users className="size-4" />
                       <span>Anggota</span>
@@ -110,7 +208,7 @@ function AppLayout() {
             )}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <div className="hidden flex-col items-end sm:flex">
               <span className="text-sm font-medium leading-none">{profile.full_name}</span>
               <div className="mt-1 flex items-center gap-1">

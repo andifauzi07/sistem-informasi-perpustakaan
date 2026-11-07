@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useSuspenseQuery, useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import {
   ArrowLeft,
   BookOpen,
@@ -13,6 +14,7 @@ import {
   MapPin,
   BookmarkCheck,
   AlertCircle,
+  AlertTriangle,
   ImageIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -27,7 +29,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { catalogDetailQueryOptions } from '@/features/catalog/api/queries'
+import { memberCirculationSummaryQueryOptions } from '@/features/circulation/api/queries'
+import { useRequestLoanMutation } from '@/features/circulation/api/mutations'
 import { COPY_STATUS_LABELS } from '@/lib/labels'
+import { formatRupiah } from '@/lib/format'
+import { toUserMessage } from '@/lib/errors'
 import { supabase } from '@/lib/supabase'
 
 export const Route = createFileRoute('/_app/katalog/$bookId')({
@@ -41,7 +47,17 @@ export const Route = createFileRoute('/_app/katalog/$bookId')({
 
 function DetailBukuPage() {
   const { bookId } = Route.useParams()
-  const { data: book } = useSuspenseQuery(catalogDetailQueryOptions(Number(bookId)))
+  const { profile } = Route.useRouteContext()
+  const numericBookId = Number(bookId)
+  const { data: book } = useSuspenseQuery(catalogDetailQueryOptions(numericBookId))
+
+  const isMember = profile.role === 'student' || profile.role === 'teacher'
+  const { data: memberSummary } = useQuery({
+    ...memberCirculationSummaryQueryOptions(profile.id),
+    enabled: isMember,
+  })
+
+  const requestLoanMutation = useRequestLoanMutation()
 
   if (!book) {
     return (
@@ -67,6 +83,38 @@ function DetailBukuPage() {
   const totalCopies = availability?.total_copies ?? 0
   const availableCopies = availability?.available_copies ?? 0
   const isAvailable = availableCopies > 0
+
+  const hasOpenRequestForBook = Boolean(
+    memberSummary?.openRequests.some((r) => r.book_id === numericBookId)
+  )
+  const hasActiveLoanForBook = Boolean(
+    memberSummary?.activeLoans.some((l) => l.book_id === numericBookId)
+  )
+  const isDuplicateTitle = hasOpenRequestForBook || hasActiveLoanForBook
+  const isQuotaFull = memberSummary ? memberSummary.remainingQuota <= 0 : false
+  const unpaidFinesTotal = memberSummary?.unpaidFinesTotal ?? 0
+
+  let disableReason: string | null = null
+  if (!isAvailable) {
+    disableReason = 'Stok eksemplar sedang habis di perpustakaan.'
+  } else if (isDuplicateTitle) {
+    disableReason = 'Judul ini sudah Anda ajukan atau sedang Anda pinjam.'
+  } else if (isQuotaFull) {
+    disableReason = `Batas peminjaman tercapai (${memberSummary?.maxActiveLoans ?? 5} buku).`
+  }
+
+  const canRequestLoan = isMember && !disableReason && !requestLoanMutation.isPending
+
+  const handleRequestLoan = async () => {
+    try {
+      await requestLoanMutation.mutateAsync(numericBookId)
+      toast.success(
+        'Pengajuan peminjaman berhasil dikirim! Silakan tunggu verifikasi pustakawan dan ambil buku sebelum batas waktu.'
+      )
+    } catch (err) {
+      toast.error(toUserMessage(err))
+    }
+  }
 
   const coverUrl = book.cover_path
     ? supabase.storage.from('covers').getPublicUrl(book.cover_path).data.publicUrl
@@ -107,7 +155,7 @@ function DetailBukuPage() {
             )}
           </div>
 
-          {/* Kotak Ketersediaan & Tombol Ajukan Pinjam (FR-CAT-04, FR-CAT-05, BR-04) */}
+          {/* Kotak Ketersediaan & Tombol Ajukan Pinjam (FR-CAT-04, FR-CIR-01, BR-01..BR-04) */}
           <Card className="border-primary/20 bg-primary/5">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-semibold flex items-center justify-between">
@@ -143,23 +191,58 @@ function DetailBukuPage() {
                 </div>
               </div>
 
-              {/* Tombol Ajukan Pinjam (TC-CAT-04: Nonaktif jika stok 0) */}
-              <div className="pt-2">
-                <Button
-                  className="w-full gap-2"
-                  disabled={!isAvailable}
-                  title={!isAvailable ? 'Stok buku sedang habis' : 'Ajukan Peminjaman'}
-                >
-                  <BookmarkCheck className="size-4" />
-                  <span>{isAvailable ? 'Ajukan Pinjam' : 'Stok Sedang Habis'}</span>
-                </Button>
-                {!isAvailable && (
-                  <p className="mt-2 text-center text-xs text-destructive flex items-center justify-center gap-1">
-                    <AlertCircle className="size-3 shrink-0" />
-                    <span>Stok eksemplar sedang habis di perpustakaan.</span>
-                  </p>
-                )}
-              </div>
+              {/* Peringatan Denda Belum Lunas Non-Blokir (FR-FIN-07, BR-12) */}
+              {isMember && unpaidFinesTotal > 0 && (
+                <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
+                  <AlertTriangle className="size-4 shrink-0 mt-0.5 text-amber-600" />
+                  <span>
+                    Anda memiliki denda belum lunas sebesar{' '}
+                    <strong>{formatRupiah(unpaidFinesTotal)}</strong>. Anda tetap dapat mengajukan
+                    pinjaman.
+                  </span>
+                </div>
+              )}
+
+              {/* Tombol Ajukan Pinjam (TC-CAT-04, TC-CIR-01..04) */}
+              {isMember ? (
+                <div className="pt-2">
+                  <Button
+                    className="w-full gap-2"
+                    disabled={!canRequestLoan}
+                    onClick={() => {
+                      void handleRequestLoan()
+                    }}
+                    title={disableReason || 'Ajukan Peminjaman'}
+                  >
+                    <BookmarkCheck className="size-4" />
+                    <span>
+                      {requestLoanMutation.isPending
+                        ? 'Mengirim Pengajuan...'
+                        : !isAvailable
+                          ? 'Stok Sedang Habis'
+                          : isDuplicateTitle
+                            ? 'Sudah Diajukan / Dipinjam'
+                            : isQuotaFull
+                              ? 'Batas Pinjam Tercapai'
+                              : 'Ajukan Pinjam'}
+                    </span>
+                  </Button>
+                  {disableReason && (
+                    <p className="mt-2 text-center text-xs text-destructive flex items-center justify-center gap-1">
+                      <AlertCircle className="size-3 shrink-0" />
+                      <span>{disableReason}</span>
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="pt-2 text-center text-xs text-muted-foreground">
+                  Pustakawan memproses transaksi melalui menu{' '}
+                  <Link to="/pustakawan/sirkulasi" className="font-semibold text-primary underline">
+                    Meja Sirkulasi
+                  </Link>
+                  .
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
