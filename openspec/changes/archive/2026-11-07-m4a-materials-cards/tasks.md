@@ -25,9 +25,9 @@
 
 ## 5. Pengujian & Penyiapan Bukti Reviewer
 
-- [ ] 5.1 Tulis tes unit Vitest untuk validasi berkas upload (ekstensi & ukuran) serta format kartu ID-1
-- [ ] 5.2 Tulis tes E2E Playwright untuk alur unggah materi oleh guru dan unduhan oleh siswa
-- [ ] 5.3 Catat entri kasus uji `TC-CARD-01`, `TC-CARD-02` dan `TC-MAT-01` s.d. `TC-MAT-05` di `docs/testing/black-box.md` agar siap diuji oleh reviewer manusia
-- [ ] 5.4 Jalankan /ponytail-review pada diff change ini dan terapkan temuan yang tidak melanggar PRD/CLAUDE.md
-- [ ] 5.5 Penuhi Definition of Done CLAUDE.md §13 (`typecheck` + `lint` + `test` + `build` lulus)
-- [ ] 5.6 Arsipkan change dengan perintah `openspec archive m4a-materials-cards` sebelum push ke remote branch GitHub
+- [x] 5.1 Tulis tes unit Vitest untuk validasi berkas upload (ekstensi & ukuran) serta format kartu ID-1
+- [x] 5.2 Tulis tes E2E Playwright untuk alur unggah materi oleh guru dan unduhan oleh siswa
+- [x] 5.3 Catat entri kasus uji `TC-CARD-01`, `TC-CARD-02` dan `TC-MAT-01` s.d. `TC-MAT-05` di `docs/testing/black-box.md` agar siap diuji oleh reviewer manusia
+- [x] 5.4 Jalankan /ponytail-review pada diff change ini dan terapkan temuan yang tidak melanggar PRD/CLAUDE.md
+- [x] 5.5 Penuhi Definition of Done CLAUDE.md §13 (`typecheck` + `lint` + `test` + `build` lulus)
+- [x] 5.6 Arsipkan change dengan perintah `openspec archive m4a-materials-cards` sebelum push ke remote branch GitHub
