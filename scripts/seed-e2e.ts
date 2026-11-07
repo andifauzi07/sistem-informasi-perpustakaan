@@ -50,6 +50,7 @@ export async function seedE2E() {
     isActive: boolean
     className?: string
     position?: string
+    subject?: string
   }) {
     const email = toAuthEmail(opts.memberCode, domain)
     
@@ -100,6 +101,7 @@ export async function seedE2E() {
         must_change_password: opts.mustChangePassword,
         class_name: opts.className,
         position: opts.position,
+        subject: opts.subject,
       })
       .eq('id', userId)
 
@@ -152,6 +154,17 @@ export async function seedE2E() {
     mustChangePassword: false,
     isActive: false,
     className: 'XI AKL 1',
+  })
+
+  // 5. Guru Aktif Normal
+  await getOrCreateUser({
+    memberCode: 'GURU01',
+    fullName: 'Budi Guru',
+    role: 'teacher',
+    password: 'Password123!',
+    mustChangePassword: false,
+    isActive: true,
+    subject: 'Informatika',
   })
 
   console.log('✓ Data pengguna E2E selesai disiapkan.')

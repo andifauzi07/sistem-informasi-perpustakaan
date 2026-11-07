@@ -49,15 +49,8 @@ export const uploadMaterialFormSchema = z.object({
     .max(1000, 'Deskripsi maksimal 1000 karakter')
     .optional()
     .nullable(),
-  majorId: z.coerce.number().nullable().optional(),
-  gradeLevel: z.coerce
-    .number()
-    .int()
-    .refine((val) => !val || [10, 11, 12].includes(val), {
-      message: 'Tingkat kelas harus kelas 10, 11, atau 12',
-    })
-    .nullable()
-    .optional(),
+  majorId: z.number().optional().nullable(),
+  gradeLevel: z.number().int().min(10).max(12).optional().nullable(),
   file: z
     .custom<File>((val) => typeof File !== 'undefined' && val instanceof File, {
       message: 'Berkas bahan ajar wajib dipilih',
@@ -96,15 +89,8 @@ export const updateMaterialSchema = z.object({
     .max(1000, 'Deskripsi maksimal 1000 karakter')
     .optional()
     .nullable(),
-  majorId: z.coerce.number().nullable().optional(),
-  gradeLevel: z.coerce
-    .number()
-    .int()
-    .refine((val) => !val || [10, 11, 12].includes(val), {
-      message: 'Tingkat kelas harus kelas 10, 11, atau 12',
-    })
-    .nullable()
-    .optional(),
+  majorId: z.number().optional().nullable(),
+  gradeLevel: z.number().int().min(10).max(12).optional().nullable(),
 })
 
 export type UpdateMaterialFormData = z.infer<typeof updateMaterialSchema>
