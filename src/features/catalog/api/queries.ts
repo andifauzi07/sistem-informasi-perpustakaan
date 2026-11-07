@@ -5,6 +5,27 @@ import type { CatalogFilter } from '../schemas'
 
 const PAGE_SIZE = 20
 
+function isMissingTableError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+  const code = (error as { code?: string }).code
+  const msg = ((error as { message?: string }).message || '').toLowerCase()
+  return (
+    code === 'PGRST205' ||
+    code === 'PGRST202' ||
+    code === '42P01' ||
+    msg.includes('schema cache') ||
+    msg.includes('does not exist')
+  )
+}
+
+function unwrapOrEmpty<T>(res: { data: T[] | null; error: Error | null }): T[] {
+  if (res.error) {
+    if (isMissingTableError(res.error)) return []
+    throw res.error
+  }
+  return res.data || []
+}
+
 // Penelusuran Katalog Buku (FR-CAT-01, FR-CAT-02, FR-CAT-03)
 export function catalogSearchQueryOptions(filters: CatalogFilter) {
   return queryOptions({
@@ -22,7 +43,7 @@ export function catalogSearchQueryOptions(filters: CatalogFilter) {
         p_offset: offset,
       })
 
-      const rows = unwrap(res) || []
+      const rows = unwrapOrEmpty(res)
       const count = rows.length > 0 ? Number(rows[0].total_count) : 0
       const totalPages = Math.ceil(count / PAGE_SIZE)
 

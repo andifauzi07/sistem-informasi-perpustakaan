@@ -5,6 +5,27 @@ import type { CollectionFilter } from '../schemas'
 
 const PAGE_SIZE = 20
 
+function isMissingTableError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+  const code = (error as { code?: string }).code
+  const msg = ((error as { message?: string }).message || '').toLowerCase()
+  return (
+    code === 'PGRST205' ||
+    code === 'PGRST202' ||
+    code === '42P01' ||
+    msg.includes('schema cache') ||
+    msg.includes('does not exist')
+  )
+}
+
+function unwrapOrEmpty<T>(res: { data: T[] | null; error: Error | null }): T[] {
+  if (res.error) {
+    if (isMissingTableError(res.error)) return []
+    throw res.error
+  }
+  return res.data || []
+}
+
 // Daftar Kategori (Data referensi staleTime: 5 menit)
 export function categoriesListQueryOptions() {
   return queryOptions({
@@ -14,7 +35,7 @@ export function categoriesListQueryOptions() {
         .from('categories')
         .select('*')
         .order('name', { ascending: true })
-      return unwrap(res) || []
+      return unwrapOrEmpty(res)
     },
     staleTime: 5 * 60_000,
   })
@@ -47,8 +68,8 @@ export function booksListQueryOptions(filters: CollectionFilter) {
       query = query.order('created_at', { ascending: false }).range(from, to)
 
       const res = await query
-      const rows = unwrap(res) || []
-      const count = res.count ?? 0
+      const rows = unwrapOrEmpty(res)
+      const count = res.error ? 0 : (res.count ?? 0)
       const totalPages = Math.ceil(count / PAGE_SIZE)
 
       const bookIds = rows.map((b) => b.id)
@@ -140,7 +161,7 @@ export function bookCopiesQueryOptions(bookId: number) {
         .select('*')
         .eq('book_id', bookId)
         .order('code', { ascending: true })
-      return unwrap(res) || []
+      return unwrapOrEmpty(res)
     },
     staleTime: 30_000,
   })
