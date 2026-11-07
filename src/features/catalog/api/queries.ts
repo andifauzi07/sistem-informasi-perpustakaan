@@ -35,8 +35,8 @@ export function catalogSearchQueryOptions(filters: CatalogFilter) {
       const offset = (page - 1) * PAGE_SIZE
 
       const res = await supabase.rpc('search_catalog', {
-        p_query: filters.q.trim() || null,
-        p_category_id: filters.category || null,
+        p_query: filters.q.trim() || undefined,
+        p_category_id: filters.category || undefined,
         p_available_only: Boolean(filters.availableOnly),
         p_sort: filters.sort || 'relevance',
         p_limit: PAGE_SIZE,
