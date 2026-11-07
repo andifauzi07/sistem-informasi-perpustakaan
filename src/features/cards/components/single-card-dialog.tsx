@@ -31,7 +31,7 @@ export function SingleCardDialog({
   React.useEffect(() => {
     if (member?.member_code && open) {
       let isMounted = true
-      generateQrCodeDataUrl(member.member_code).then((url) => {
+      void generateQrCodeDataUrl(member.member_code).then((url) => {
         if (isMounted) setQrUrl(url)
       })
       return () => {
@@ -152,7 +152,9 @@ export function SingleCardDialog({
           </Button>
           <Button
             type="button"
-            onClick={handleDownload}
+            onClick={() => {
+              void handleDownload()
+            }}
             disabled={isGenerating}
             className="gap-2"
           >

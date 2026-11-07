@@ -21,6 +21,9 @@ import {
   Menu,
   X,
   Clock,
+  FileText,
+  FolderOpen,
+  CreditCard,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/_app')({
@@ -106,6 +109,23 @@ function AppLayout() {
           <BookOpen className="size-4 shrink-0" />
           <span>Katalog</span>
         </Link>
+
+        <Link
+          to="/bahan-ajar"
+          search={{
+            q: '',
+            subject: '',
+            majorId: undefined,
+            gradeLevel: undefined,
+            page: 1,
+          }}
+          onClick={closeMobileMenu}
+          activeProps={{ className: navActiveClass }}
+          className={navLinkClass}
+        >
+          <FileText className="size-4 shrink-0" />
+          <span>Bahan Ajar</span>
+        </Link>
       </div>
 
       {/* Grup 2: Sirkulasi Anggota (Siswa & Guru) */}
@@ -144,6 +164,18 @@ function AppLayout() {
             <Receipt className="size-4 shrink-0" />
             <span>Denda Saya</span>
           </Link>
+
+          {profile.role === 'teacher' && (
+            <Link
+              to="/guru/bahan-ajar"
+              onClick={closeMobileMenu}
+              activeProps={{ className: navActiveClass }}
+              className={navLinkClass}
+            >
+              <FolderOpen className="size-4 shrink-0" />
+              <span>Bahan Ajar Saya</span>
+            </Link>
+          )}
         </div>
       )}
 
@@ -249,6 +281,17 @@ function AppLayout() {
             >
               <Users className="size-4 shrink-0" />
               <span>Anggota</span>
+            </Link>
+
+            <Link
+              to="/pustakawan/kartu-anggota"
+              search={{ q: '', role: 'all', className: '', majorId: undefined, page: 1 }}
+              onClick={closeMobileMenu}
+              activeProps={{ className: navActiveClass }}
+              className={navLinkClass}
+            >
+              <CreditCard className="size-4 shrink-0" />
+              <span>Kartu Anggota</span>
             </Link>
           </div>
         </>
