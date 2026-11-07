@@ -18,6 +18,7 @@ export const ERROR_MESSAGES: Record<string, string> = {
   CODE_TAKEN: 'Kode eksemplar sudah dipakai.',
   LOAN_INVALID_STATE: 'Status peminjaman sudah berubah. Muat ulang halaman.',
   FINE_INVALID_STATE: 'Status denda sudah berubah. Muat ulang halaman.',
+  FINE_ALREADY_SETTLED: 'Denda ini sudah diselesaikan (lunas atau dibebaskan).',
   INVALID_STATUS_TRANSITION: 'Perubahan status eksemplar tidak diizinkan.',
   BOOK_HAS_HISTORY: 'Buku memiliki riwayat transaksi sehingga tidak dapat dihapus. Tarik eksemplarnya.',
 }
