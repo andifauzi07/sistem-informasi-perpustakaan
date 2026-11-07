@@ -549,7 +549,7 @@ begin
   end if;
 
   -- BR-05: pickup_deadline = 23:59:59 WITA pada (today_wita() + pickup_days)
-  v_deadline := (((private.today_wita() + v_policy.pickup_days)::text || ' 23:59:59') at time zone 'Asia/Makassar');
+  v_deadline := (((private.today_wita() + v_policy.pickup_days)::text || ' 23:59:59')::timestamp at time zone 'Asia/Makassar');
 
   update public.book_copies
   set status = 'reserved',
