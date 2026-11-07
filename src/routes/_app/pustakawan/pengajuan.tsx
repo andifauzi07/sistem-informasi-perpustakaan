@@ -235,9 +235,7 @@ function AntreanPengajuanPustakawanPage() {
                 </TableRow>
               ) : (
                 requestsResult.data.map((req) => {
-                  const availObj = Array.isArray(req.book?.v_book_availability)
-                    ? req.book.v_book_availability[0]
-                    : req.book?.v_book_availability
+                  const availObj = req.book?.v_book_availability
                   const availCount = availObj?.available_copies ?? 0
                   const totalCount = availObj?.total_copies ?? 0
                   const unpaidFines = req.memberSummary.unpaidFines
