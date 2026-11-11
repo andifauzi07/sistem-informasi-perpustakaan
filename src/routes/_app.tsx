@@ -24,6 +24,9 @@ import {
   FileText,
   FolderOpen,
   CreditCard,
+  BarChart3,
+  ShieldCheck,
+  Settings,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/_app')({
@@ -292,6 +295,43 @@ function AppLayout() {
             >
               <CreditCard className="size-4 shrink-0" />
               <span>Kartu Anggota</span>
+            </Link>
+          </div>
+
+          <div className="space-y-0.5">
+            <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+              Laporan & Sistem
+            </p>
+            <Link
+              to="/pustakawan/laporan"
+              search={{ type: 'loans', from: '', to: '' }}
+              onClick={closeMobileMenu}
+              activeProps={{ className: navActiveClass }}
+              className={navLinkClass}
+            >
+              <BarChart3 className="size-4 shrink-0" />
+              <span>Laporan</span>
+            </Link>
+
+            <Link
+              to="/pustakawan/log-aktivitas"
+              search={{ action: 'all', officerId: '', from: '', to: '', page: 1 }}
+              onClick={closeMobileMenu}
+              activeProps={{ className: navActiveClass }}
+              className={navLinkClass}
+            >
+              <ShieldCheck className="size-4 shrink-0" />
+              <span>Log Aktivitas</span>
+            </Link>
+
+            <Link
+              to="/pustakawan/pengaturan"
+              onClick={closeMobileMenu}
+              activeProps={{ className: navActiveClass }}
+              className={navLinkClass}
+            >
+              <Settings className="size-4 shrink-0" />
+              <span>Pengaturan</span>
             </Link>
           </div>
         </>
