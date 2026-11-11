@@ -429,7 +429,7 @@ returns table (
   member_id uuid,
   member_code text,
   full_name text,
-  role public.user_role,
+  role public.app_role,
   class_name text,
   total_loans integer,
   returned_loans integer,
