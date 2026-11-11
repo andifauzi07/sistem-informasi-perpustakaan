@@ -165,6 +165,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"library_settings": {
+                  Row: {
+                    "address": string,"id": number,"library_name": string,"logo_path": string | null,"school_name": string,"updated_at": string,"updated_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address"?: string,"id"?: number,"library_name"?: string,"logo_path"?: string | null,"school_name"?: string,"updated_at"?: string,"updated_by"?: string | null
+                  }
+                  Update: {
+                    "address"?: string,"id"?: number,"library_name"?: string,"logo_path"?: string | null,"school_name"?: string,"updated_at"?: string,"updated_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+                      foreignKeyName: "library_settings_updated_by_fkey"
+                      columns: ["updated_by"]
+                      isOneToOne: false
+                      referencedRelation: "profiles"
+                      referencedColumns: ["id"]
+                    }
+                  ]
                 },"loan_policies": {
                   Row: {
                     "daily_fine": number,"loan_days": number,"max_active_loans": number,"pickup_days": number,"role": Database["public"]['Enums']["app_role"],"updated_at": string,"updated_by": string | null
@@ -709,7 +729,109 @@ isOneToOne: true
         to: "fines"
         isOneToOne: true
         isSetofReturn: false
-      } }
+      } },
+"get_librarian_dashboard":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"report_fines":
+{ Args: { "p_from": string,"p_to": string }; Returns: {
+              "amount": number,
+              "class_name": string | null,
+              "created_at": string,
+              "fine_id": number,
+              "loan_id": number,
+              "member_code": string,
+              "member_name": string,
+              "paid_at": string | null,
+              "status": Database["public"]['Enums']["fine_status"],
+              "title": string,
+              "type": Database["public"]['Enums']["fine_type"],
+              "waived_at": string | null,
+              "waived_reason": string | null
+            }[]
+                           },
+"report_inventory":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "authors": string,
+              "available_copies": number,
+              "book_id": number,
+              "category_name": string,
+              "damaged_copies": number,
+              "isbn": string | null,
+              "lost_copies": number,
+              "on_loan_copies": number,
+              "reserved_copies": number,
+              "title": string,
+              "total_copies": number,
+              "withdrawn_copies": number
+            }[]
+                           },
+"report_loans":
+{ Args: { "p_from": string,"p_to": string }; Returns: {
+              "class_name": string | null,
+              "copy_code": string,
+              "due_date": string,
+              "loan_id": number,
+              "loaned_at": string,
+              "member_code": string,
+              "member_name": string,
+              "returned_at": string | null,
+              "status": Database["public"]['Enums']["loan_status"],
+              "title": string
+            }[]
+                           },
+"report_member_activity":
+{ Args: { "p_from": string,"p_to": string }; Returns: {
+              "class_name": string | null,
+              "full_name": string,
+              "member_code": string,
+              "member_id": string,
+              "overdue_loans": number,
+              "returned_loans": number,
+              "role": Database["public"]['Enums']["app_role"],
+              "total_loans": number
+            }[]
+                           },
+"report_overdue":
+{ Args: { "p_as_of"?: string }; Returns: {
+              "class_name": string | null,
+              "copy_code": string,
+              "daily_fine_snapshot": number,
+              "days_overdue": number,
+              "due_date": string,
+              "estimated_fine": number,
+              "loan_id": number,
+              "loaned_at": string,
+              "member_code": string,
+              "member_name": string,
+              "title": string
+            }[]
+                           },
+"report_popular_books":
+{ Args: { "p_from": string,"p_limit"?: number,"p_to": string }; Returns: {
+              "authors": string,
+              "book_id": number,
+              "borrow_count": number,
+              "category_name": string,
+              "title": string
+            }[]
+                           },
+"report_returns":
+{ Args: { "p_from": string,"p_to": string }; Returns: {
+              "class_name": string | null,
+              "copy_code": string,
+              "days_overdue": number,
+              "due_date": string,
+              "fine_amount": number,
+              "fine_status": Database["public"]['Enums']["fine_status"] | null,
+              "loan_id": number,
+              "loaned_at": string,
+              "member_code": string,
+              "member_name": string,
+              "returned_at": string,
+              "title": string
+            }[]
+                           }
           }
           Enums: {
             "app_role": "student"|"teacher"|"librarian","copy_source": "purchase"|"donation"|"government"|"other","copy_status": "available"|"reserved"|"on_loan"|"damaged"|"lost"|"withdrawn","fine_status": "unpaid"|"paid"|"waived","fine_type": "late"|"damage"|"loss","loan_request_status": "pending"|"approved"|"rejected"|"cancelled"|"expired"|"fulfilled","loan_status": "active"|"returned"|"lost","material_status": "published"|"hidden"
