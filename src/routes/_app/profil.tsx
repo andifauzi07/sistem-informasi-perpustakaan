@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -21,6 +21,7 @@ export const Route = createFileRoute('/_app/profil')({
 function ProfilPage() {
   const { profile } = Route.useRouteContext()
   const navigate = useNavigate()
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const changePasswordMutation = useChangePasswordMutation()
   const logoutMutation = useLogoutMutation()
@@ -51,6 +52,7 @@ function ProfilPage() {
   const onLogout = async () => {
     try {
       await logoutMutation.mutateAsync()
+      await router.invalidate()
       void navigate({ to: '/login' })
     } catch (err) {
       toast.error(toUserMessage(err))

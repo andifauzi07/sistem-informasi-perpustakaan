@@ -105,4 +105,26 @@ test.describe('Autentikasi (M1)', () => {
     await expect(page).toHaveURL(/\/login/)
     await expect(page.getByRole('button', { name: 'Masuk' })).toBeVisible()
   })
+
+  test('TC-AUTH-08 pengguna aktif membuka /login → otomatis dialihkan ke /beranda', async ({ page }) => {
+    // 1. Buka root terlebih dahulu untuk menginisialisasi query cache null (alur pengguna nyata)
+    await page.goto('/')
+    await expect(page).toHaveURL(/\/login/)
+
+    // 2. Login siswa
+    await page.getByLabel('NIS / NIP').fill('SISWA01')
+    await page.locator('input#password').fill('Password123!')
+    await page.getByRole('button', { name: 'Masuk' }).click()
+
+    // 3. Harus langsung berpindah ke /beranda tanpa tertahan di /login
+    await expect(page).toHaveURL(/\/beranda/)
+    await expect(page.getByRole('heading', { name: /Ahmad Siswa/i })).toBeVisible()
+
+    // 4. Buka kembali rute /login saat masih dalam sesi aktif
+    await page.goto('/login')
+
+    // 5. Guest guard harus mengalihkan kembali ke /beranda
+    await expect(page).toHaveURL(/\/beranda/)
+    await expect(page.getByRole('heading', { name: /Ahmad Siswa/i })).toBeVisible()
+  })
 })
