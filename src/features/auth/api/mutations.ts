@@ -49,7 +49,9 @@ export function useLoginMutation() {
         profile: profileRes.data,
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      queryClient.setQueryData(authKeys.session(), data.session)
+      queryClient.setQueryData(authKeys.profile(data.user.id), data.profile)
       void queryClient.invalidateQueries({ queryKey: authKeys.all })
     },
   })
@@ -64,6 +66,7 @@ export function useLogoutMutation() {
       if (error) throw error
     },
     onSuccess: () => {
+      queryClient.setQueryData(authKeys.session(), null)
       queryClient.clear()
     },
   })

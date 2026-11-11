@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -24,14 +24,29 @@ import {
   CardFooter,
 } from '@/components/ui/card'
 import { loginSchema, type LoginFormData } from '@/features/auth/schemas'
+import { sessionQueryOptions, profileQueryOptions } from '@/features/auth/api/queries'
 import { useLoginMutation } from '@/features/auth/api/mutations'
 import { toUserMessage } from '@/lib/errors'
 
 export const Route = createFileRoute('/login')({
+  beforeLoad: async ({ context }) => {
+    // Guest Guard: alihkan pengguna yang sudah terotentikasi (FR-AUTH-01, FR-AUTH-03)
+    const session = await context.queryClient.ensureQueryData(sessionQueryOptions())
+    if (session?.user) {
+      const profile = await context.queryClient.ensureQueryData(profileQueryOptions(session.user.id))
+      if (profile && profile.is_active) {
+        if (profile.must_change_password) {
+          throw redirect({ to: '/ganti-password' })
+        }
+        throw redirect({ to: '/beranda' })
+      }
+    }
+  },
   component: LoginPage,
 })
 
 function LoginPage() {
+  const router = useRouter()
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const loginMutation = useLoginMutation()
@@ -52,6 +67,8 @@ function LoginPage() {
     try {
       const result = await loginMutation.mutateAsync(data)
       toast.success(`Selamat datang, ${result.profile.full_name}!`)
+
+      await router.invalidate()
 
       if (result.profile.must_change_password) {
         void navigate({ to: '/ganti-password' })

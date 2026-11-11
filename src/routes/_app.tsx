@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute, Outlet, redirect, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { sessionQueryOptions, profileQueryOptions } from '@/features/auth/api/queries'
 import { useLogoutMutation } from '@/features/auth/api/mutations'
 import { ROLE_LABELS } from '@/lib/labels'
@@ -57,10 +57,12 @@ function AppLayout() {
   const { profile } = Route.useRouteContext()
   const logoutMutation = useLogoutMutation()
   const navigate = useNavigate()
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync()
+    await router.invalidate()
     void navigate({ to: '/login' })
   }
 
