@@ -106,9 +106,11 @@ select throws_matching(
 );
 
 -- Siswa tidak boleh mengupdate library_settings (Assertion 19)
-select throws_matching(
-  $$ update public.library_settings set school_name = 'SMKN Ilegal' where id = 1 $$,
-  'violates row-level security policy',
+update public.library_settings set school_name = 'SMKN Ilegal' where id = 1;
+
+select results_eq(
+  $$ select school_name from public.library_settings where id = 1 $$,
+  $$ values ('SMKN 1 Selayar') $$,
   'Siswa tidak boleh mengubah library_settings (RLS policy)'
 );
 
